@@ -164,6 +164,28 @@ h1{font-size:1.75rem;font-weight:500;letter-spacing:-.022em;line-height:1.12;mar
 .mini-ruler i{position:absolute;left:0;top:0;bottom:0;background:#F7E64A;border-radius:2px}
 .mini-ruler b{position:absolute;top:-4px;width:10px;height:10px;border-radius:50%;background:#111;border:2px solid #fff;margin-left:-5px}
 
+
+/* ---- all initiatives map ---- */
+.ini{position:absolute;inset:0;pointer-events:none;z-index:3}.ini[hidden]{display:none}.ini svg{position:absolute;inset:0;width:100%;height:100%}
+.ini-b{position:absolute;pointer-events:auto;display:flex;align-items:center;gap:6px;height:26px;min-width:26px;padding:0;border:2px solid #FFFFFF;border-radius:999px;font:600 12px/1 "Jost",system-ui,sans-serif;box-shadow:0 4px 12px -4px rgba(0,0,0,.45);cursor:pointer;transition:opacity .2s}
+.ini-b b{display:grid;place-items:center;min-width:22px;height:22px;font-weight:600}.ini-b span{display:none;white-space:nowrap;padding-right:11px;font-weight:500}
+.ini-b:hover span,.ini-b.on span{display:inline}.ini-b.on{z-index:2;height:32px;font-size:13px;border-color:#0F0F0F;box-shadow:0 0 0 4px rgba(247,230,74,.65),0 6px 16px -4px rgba(0,0,0,.5)}.ini-b.on b{min-width:28px;height:28px}.ini-b:hover{z-index:3}
+.ini-b.dim{opacity:.22}
+.ini-on .labels,.ini-on .leaders{display:none}
+.ini-cta{position:absolute;top:16px;right:16px;z-index:4;display:flex;align-items:center;gap:10px;padding:10px 16px 10px 12px;border-radius:999px;background:#0F0F0F;color:#FFFFFF;font:500 .84rem/1 "Jost",system-ui,sans-serif;box-shadow:0 8px 22px -8px rgba(0,0,0,.55);cursor:pointer}
+.ini-cta i{display:flex;gap:2px}.ini-cta s{display:block;width:6px;height:16px;border-radius:3px}.ini-cta.on{background:#F7E64A;color:#0F0F0F}
+aside.ini-mode .ctl{display:none}
+.ini-acts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}.ini-btn{padding:8px 14px;border-radius:999px;border:1px solid var(--line);font-size:.8rem;font-weight:500;color:var(--ink);background:var(--panel)}.ini-btn.on{background:#0F0F0F;color:#F7E64A;border-color:#0F0F0F}
+.ini-lanes{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.ini-lanes button{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:.74rem;color:var(--ink);background:var(--panel)}
+.ini-lanes i{width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}.ini-lanes small{color:var(--mute)}.ini-lanes button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.ini-card{margin-top:14px;border:1px solid var(--line);border-left:5px solid var(--lc);border-radius:12px;padding:14px 16px;background:var(--soft)}
+.ini-ck{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--ink2);letter-spacing:.02em}.ini-ck b{display:grid;place-items:center;min-width:24px;height:24px;border-radius:999px;font-size:.78rem}
+.ini-card h2{font-size:1.15rem;font-weight:500;margin:8px 0 4px}.ini-card p{font-size:.86rem;color:var(--ink2);line-height:1.5;margin:0 0 10px}
+.ini-kv{display:flex;gap:10px;font-size:.8rem;padding-top:6px;border-top:1px solid var(--line);margin-top:6px}.ini-kv span{min-width:46px;color:var(--mute)}.ini-kv b{font-weight:500}
+.ini-rows{display:grid;gap:4px}.ini-rows button{display:flex;align-items:center;gap:10px;text-align:left;padding:7px 8px;border-radius:10px;color:var(--ink);width:100%}
+.ini-rows button:hover{background:var(--soft)}.ini-rows button[aria-current="true"]{background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+.ini-rows b{display:grid;place-items:center;min-width:24px;height:24px;border-radius:999px;font-size:.76rem;font-weight:600;flex:none}.ini-rows span{display:flex;flex-direction:column;font-size:.86rem}.ini-rows small{font-size:.72rem;color:var(--mute)}
+@media (max-width:860px){.ini-cta{top:auto;bottom:52px;right:12px}}
 </style>
 </head>
 <body>
@@ -181,6 +203,7 @@ h1{font-size:1.75rem;font-weight:500;letter-spacing:-.022em;line-height:1.12;mar
       <div class="tools" role="toolbar" aria-label="View tools">
         <button id="tStyle" type="button" data-tip="Realistic or sketch style" aria-label="Realistic or sketch style" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg><span class="sr">Style: realistic</span></button>
         <div class="sep" aria-hidden="true"></div>
+        <button id="tIni" type="button" data-tip="All initiatives map" aria-label="All initiatives map" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s-6-5.6-6-10a6 6 0 0 1 12 0c0 4.4-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>All initiatives</button>
         <button id="tFit" type="button" data-tip="Zoom to scene" aria-label="Zoom to scene"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>Zoom to scene</button>
         <button id="tLabels" type="button" data-tip="Labels: key touchpoints" aria-label="Labels: key touchpoints" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8" r="1.5"/></svg><span class="sr">Labels: key</span></button>
         <button id="tFlows" type="button" data-tip="All data flows" aria-label="All data flows" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 18c4-8 8-12 16-12"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/></svg>All data flows</button>
@@ -529,6 +552,32 @@ const STEPS=[
  {s:9,t:'The decision gate at month six',b:'If pilot stores beat control on second purchase without hurting full-price share, Grow Club rolls out store by store, with the same consent rules. If not, the brand stops, having spent little.',idea:'Customer economics (S16–17) · decide with data',cam:[0,5.5,-4,15,0.25,1.0],act:{},hl:['hq'],flows:[['cloud','hq']],phone:['off','Phone in pocket'],tablet:['gate'],crm:{rows:[['Scale if','2nd purchase lift and full-price share held',0],['Stop if','No lift vs control',0],['Then','Roll out with the same never-list',0]],note:'A small, reversible bet: the pilot needs little more than Shopify, WhatsApp and staff training.'}}
 ];
 
+/* ---- Grow Club 2.1: fixtures for every initiative in the deck ---- */
+const doodleTex=tex(256,192,(g,w,h)=>{g.fillStyle='#FFFFFF';g.fillRect(0,0,w,h);const c=['#F7E64A','#E2422E','#1D5DBF','#2E9E5B','#F08A4B'];g.lineWidth=7;g.lineCap='round';for(let i=0;i<7;i++){g.strokeStyle=c[i%5];g.beginPath();const x=30+(i*61)%200,y=30+(i*47)%140;if(i%2)g.arc(x,y,14+(i%3)*6,0,Math.PI*2);else{g.moveTo(x-18,y+12);g.lineTo(x,y-14);g.lineTo(x+18,y+12);}g.stroke();}});
+const photoTex=(year,sepia)=>tex(200,240,(g,w,h)=>{g.fillStyle=sepia?'#E9DCC4':'#FFFFFF';g.fillRect(0,0,w,h);g.fillStyle=sepia?'#B79B74':'#9DB4D6';g.fillRect(16,16,w-32,h-80);g.fillStyle=sepia?'#8A6E4B':'#F7E64A';g.beginPath();g.arc(w/2,92,30,0,Math.PI*2);g.fill();g.fillRect(w/2-38,124,76,52);g.fillStyle='#111';g.font=`600 30px ${FONT}`;g.textAlign='center';g.fillText(year,w/2,h-28);});
+fixture('lab','Kids’ Design Lab table',[-3.4,1.45,-2.0],g=>{box(1.2,0.04,0.7,C.oak,-3.4,0.5,-2.0,g);[[-0.55,-0.3],[0.55,-0.3],[-0.55,0.3],[0.55,0.3]].forEach(([dx,dz])=>box(0.04,0.48,0.04,C.white,-3.4+dx,0.24,-2.0+dz,g,{edges:false}));
+  [[-4.2,-2.0,0xF4B6B0],[-2.6,-2.0,0x9DB4D6],[-3.4,-1.45,0xCDE3C6]].forEach(([x,z,c])=>cyl(0.15,0.15,0.3,c,x,0.15,z,g));
+  [[-3.7,-2.05,0.2],[-3.15,-1.9,-0.3],[-3.45,-2.2,0.6]].forEach(([x,z,r])=>{const p=plane(0.3,0.22,doodleTex,x,0.525,z,0,g,{edges:false});p.rotation.x=-Math.PI/2;p.rotation.z=r;});
+  [0xE2422E,0x1D5DBF,0x2E9E5B].forEach((c,i)=>cyl(0.03,0.03,0.12,c,-2.95+i*0.08,0.58,-2.2,g,{edges:false}));
+  box(0.04,1.05,0.04,C.char,-3.4,0.75,-2.42,g,{edges:false});plane(0.95,0.3,textTex('Kids’ Design Lab',{w:640,h:200,size:62,bg:'#F7E64A',fg:'#111'}),-3.4,1.3,-2.39,0,g,{edges:false});});
+fixture('styling','Saturday Styling Hour',[2.1,1.75,-3.0],g=>{cyl(0.85,0.85,0.012,C.blush,2.1,0.066,-3.0,g,{edges:false});box(0.62,1.75,0.05,C.char,1.45,0.9,-3.62,g);box(0.52,1.6,0.02,0xD8E4EA,1.45,0.9,-3.585,g,{edges:false});cyl(0.2,0.2,0.42,C.oak,2.45,0.21,-2.6,g);
+  box(0.04,1.0,0.04,C.char,2.75,0.5,-3.55,g,{edges:false});plane(1.05,0.34,textTex('Saturday Styling Hour',{w:720,h:220,size:56,bg:'#111111',fg:'#F7E64A',sub:'occasion looks in their size',subSize:30}),2.75,1.15,-3.52,0,g,{edges:false});});
+mannequin(2.05,-3.25,0xE3C8EA,1.0);
+fixture('hmu','Hand-Me-Ups rail',[-3.8,2.05,2.6],g=>{rail(g,1.6,-3.8,2.6,0,4,6);plane(1.3,0.3,textTex('Hand-Me-Ups · pre-loved',{w:720,h:170,size:52,bg:'#FFFFFF',fg:'#111',accent:'#2E9E5B'}),-3.8,1.75,2.62,0,g,{edges:false});});
+fixture('since','“Since 1980” then-and-now wall',[-6.8,2.6,2.5],g=>{[[1.75,'1985',1],[2.2,'2026',0],[2.85,'1992',1],[3.3,'2026',0]].forEach(([z,y,s])=>{box(0.04,0.5,0.42,C.char,-6.98,1.85,z,g,{edges:false});plane(0.36,0.43,photoTex(y,s),-6.955,1.85,z,Math.PI/2,g,{edges:false});});
+  plane(1.7,0.3,textTex('“Since 1980” · then and now',{w:900,h:160,size:54,bg:'#111111',fg:'#FFFFFF'}),-6.955,2.42,2.52,Math.PI/2,g,{edges:false});});
+fixture('circles','Grow Club Circles meetup',[5.15,1.9,-1.15],g=>{[[-0.22,0.12],[0.22,0.12],[0,-0.2]].forEach(([dx,dz])=>{const l=box(0.03,1.5,0.03,C.oak,5.15+dx,0.72,-1.15+dz,g,{edges:false});l.rotation.x=dz<0?0.14:-0.1;});
+  const b=box(0.72,0.6,0.03,C.white,5.15,1.2,-1.07,g);b.rotation.x=-0.1;const p=plane(0.66,0.54,textTex('Grow Club Circles',{w:512,h:420,size:54,bg:'#FFFFFF',fg:'#111',sub:'Sat 11:00 · stories, art',subSize:32,accent:'#B57BD6'}),5.15,1.2,-1.05,0,g,{edges:false});p.rotation.x=-0.1;});
+fixture('studio','Video styling and creator corner',[6.2,2.05,3.95],g=>{box(0.05,1.7,1.1,C.sun,6.96,0.95,3.95,g);box(0.02,0.012,0.02,C.char,6.3,0.01,3.95,g,{edges:false});cyl(0.02,0.02,1.4,C.char,6.3,0.7,3.95,g,{edges:false});
+  const r=new THREE.Mesh(new THREE.TorusGeometry(0.22,0.025,8,32),new THREE.MeshBasicMaterial({color:0xFFF8E1}));r.position.set(6.3,1.48,3.95);r.rotation.y=Math.PI/2;g.add(r);box(0.012,0.16,0.08,0x111111,6.29,1.48,3.95,g,{edges:false});
+  [[0,0.18],[0.15,-0.1],[-0.15,-0.1]].forEach(([dx,dz])=>{const l=box(0.02,0.6,0.02,C.char,6.3+dx,0.28,3.95+dz,g,{edges:false});l.rotation.z=dx*1.4;l.rotation.x=-dz*1.4;});
+  plane(0.95,0.28,textTex('Video styling · creators',{w:640,h:190,size:48,bg:'#111111',fg:'#F7E64A'}),6.93,1.95,3.95,-Math.PI/2,g,{edges:false});});
+fixture('ngo','NGO partner pickup · children in need',[3.6,2.6,11.1],g=>{box(3.3,1.45,1.6,0xFFFFFF,3.8,0.98,11.1,g);box(0.95,1.05,1.55,0xFFFFFF,1.75,0.78,11.1,g);box(0.05,0.5,1.4,0x3E4E58,1.27,1.05,11.1,g,{edges:false});box(3.3,0.12,1.62,0x2E9E5B,3.8,0.38,11.1,g,{edges:false});
+  [[1.75,10.3],[1.75,11.9],[4.6,10.3],[4.6,11.9]].forEach(([x,z])=>{const w=wheel(g,x,0.3,z,0.3);w.rotation.set(Math.PI/2,0,0);});
+  {const nt=textTex('NGO partner',{w:900,h:250,size:84,bg:'#2E9E5B',fg:'#FFFFFF',sub:'One Size Up · for children in need',subSize:40});plane(2.6,0.72,nt,3.8,1.15,10.29,Math.PI,g,{edges:false});plane(2.6,0.72,nt,3.8,1.15,11.91,0,g,{edges:false});}
+  [[1.45,8.55,0],[1.85,8.55,0],[1.65,8.55,1],[1.6,8.95,0]].forEach(([x,z,k])=>box(0.38,0.3,0.32,0xC9A27A,x,0.15+k*0.3,z,g));});
+fixture('csr','Children’s Day banner · 14 Nov',[-4.3,2.75,4.62],g=>{[-5.5,-3.1].forEach(x=>box(0.015,0.5,0.015,C.char,x,2.62,4.62,g,{edges:false}));const t=textTex('14 Nov · Children’s Day',{w:1024,h:300,size:88,bg:'#2E9E5B',fg:'#FFFFFF',sub:'One Size Up launch: outgrown, not wasted',subSize:44});
+  plane(2.6,0.72,t,-4.3,2.05,4.63,0,g,{edges:false});plane(2.6,0.72,t,-4.3,2.05,4.61,Math.PI,g,{edges:false});});
 
 /* ================= quick wins: data map, narration, presenting ================= */
 const DATA_LV={window:0,agewall:0,girls:0,boys:0,baby:0,tables:0,fitting:0,seat:0,height:1,qr:1,bin:1,counter:2,tablet:2,shelf:2};
@@ -592,7 +641,7 @@ let cur=0,playing=false,timer=null;const STEP_MS=7500;
 function sceneFirst(s){return STEPS.findIndex(x=>x.s===s);}
 /* ================= walking: path-finding around fixtures + giving way ================= */
 const RAW_OBST=[[2.75,6.05,2.2,3.0],[-2.4,-0.6,0.1,1.1],[0.6,2.4,0.1,1.1],[1.85,2.75,3.3,4.1],[-2.35,-1.85,3.78,4.22],[6.45,7.1,0.08,1.72],[5.45,7.1,-5.1,-2.15],[-2.9,0.9,-5.0,-4.58],[1.1,4.9,-4.8,-4.5],[-6.8,-6.5,-3.2,0.8],[-6.2,-5.0,0.62,1.18],[-6.4,-4.4,-4.2,-3.2],[3.85,5.35,-2.48,-1.92],[3.35,3.85,-2.55,-2.05],[-6.6,-2.0,3.78,4.92],
-  [-6.1,-5.7,0.0,0.4],[-5.6,-5.2,0.4,0.8],[-4.8,-4.4,-3.1,-2.7],
+  [-6.1,-5.7,0.0,0.4],[-5.6,-5.2,0.4,0.8],[-4.8,-4.4,-3.1,-2.7],[-4.4,-2.4,-2.5,-1.25],[1.15,2.95,-3.75,-3.0],[2.25,2.65,-2.8,-2.4],[-4.7,-2.9,2.45,2.75],[4.85,5.45,-1.4,-0.95],[6.0,7.1,3.4,4.5],[1.2,2.1,8.3,9.2],
   [-30,-6.95,-20,5.2],[6.95,30,-20,5.2],[-8,8,-20,-4.95],[-8,-1.45,4.95,5.25],[1.45,8,4.95,5.25],[3.9,5.6,8.2,9.2],[-60,60,9.45,30]];
 const RAD=0.24;
 const infl=r=>[r[0]-RAD,r[1]+RAD,r[2]-RAD,r[3]+RAD];
@@ -678,6 +727,86 @@ function wallsAuto(){const c=camera.position;walls.forEach(w=>{if(w.userData.sid
   const low=c.z>5.1&&c.y<6.2;fascia.visible=!low;fasciaSigns.forEach(m=>m.visible=!low);}
 document.addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,select,textarea'))return;if(e.key==='ArrowRight'){playing=false;go(cur+1);}if(e.key==='ArrowLeft'){playing=false;go(cur-1);}if(e.key===' '&&e.target===document.body){e.preventDefault();$('#bPlay').click();}});
 
+/* ================= all initiatives map ================= */
+const LANES=[['svc','Four services','#F7E64A','#111111'],['online','Online','#5B92F0','#FFFFFF'],['store','In store','#111111','#F7E64A'],['bridge','Bridges','#F08A4B','#111111'],['comm','Community','#B57BD6','#FFFFFF'],['csr','CSR · One Size Up','#2E9E5B','#FFFFFF'],['data','Data and trust','#8A909C','#FFFFFF']];
+const LANE=Object.fromEntries(LANES.map(([id,n,bg,fg])=>[id,{n,bg,fg}]));
+const INI=[
+ {l:'svc',k:'home',n:'Size clock',w:'Meera’s phone at home',d:'Predicts when the next size is due from what was bought and sends one WhatsApp reminder, only if the size-up switch is on.',kpi:'Size-up conversion vs holdout',p:'Parent app › Home'},
+ {l:'svc',k:'qr',n:'30-day Fit Promise',w:'Hangtag QR stand',d:'Scan the hangtag to register the piece; swap any size within 30 days, wherever it was bought.',kpi:'Registrations; swap-to-refund ratio',p:'Parent app › Scan'},
+ {l:'svc',k:'bin',n:'One Size Up',w:'One Size Up bin by the counter',d:'Outgrown clothes in, ₹75 credit a piece (up to ₹750 a visit) toward the next size.',kpi:'Drop-off → next purchase',p:'Parent app › Store · Tablet › One Size Up'},
+ {l:'svc',k:'height',n:'Height Wall',w:'Height Wall',d:'A store ritual and a dated keepsake sticker. Nothing is saved unless the family opts in.',kpi:'Visits per active family',p:'Tablet › Find'},
+ {l:'online',k:'web',n:'Size-aware site + back-in-stock',w:'giniandjony.com',d:'The next size is pre-selected for each child, with an alert when a sold-out size returns.',kpi:'Size-up conversion',p:'Parent app › Shop'},
+ {l:'online',k:'web',n:'Basket rescue',w:'giniandjony.com',d:'One size-help message for a saved bag, never a discount code.',kpi:'Basket recovery',p:'Parent app › Me › demo controls'},
+ {l:'online',k:'web',n:'Parent fit reviews',w:'Product pages',d:'“Runs small / big” by age, from parents after a day-7 fit check.',kpi:'Size-related returns',p:'Parent app › product page'},
+ {l:'online',k:'home',n:'Try at home',w:'Delivered to Meera’s home',d:'Two sizes delivered; keep the one that fits and hand the other back at the door.',kpi:'Size returns, conversion',p:'Parent app › Bag'},
+ {l:'store',k:'counter',n:'Smart e-bill',w:'Billing counter',d:'The bill arrives on WhatsApp with a Grow Club join link, so joining takes seconds.',kpi:'Capture rate at billing',p:'Tablet › Capture'},
+ {l:'store',k:'styling',n:'Saturday Styling Hour',w:'Styling corner',d:'An associate puts together a festive, school or wedding look in the child’s size.',kpi:'Store visits, basket size',p:'Parent app › Store'},
+ {l:'store',k:'height',n:'Birthday Height Wall',w:'Height Wall',d:'A free birthday measure and a printed growth card.',kpi:'Visits per family',p:'Parent app › Store'},
+ {l:'store',k:'tablet',n:'Endless aisle',w:'Staff tablet',d:'Size not in store? The associate orders it for home delivery and the sale counts for the store.',kpi:'Saved sales',p:'Tablet › Orders'},
+ {l:'bridge',k:'shelf',n:'Collect or swap anywhere',w:'“Kept aside for you” shelf',d:'Order online and collect in 2 hours, or swap at any store within 30 days.',kpi:'Click and collect',p:'Parent app › Bag · Tablet › Orders'},
+ {l:'bridge',k:'whatsapp',n:'Book store services',w:'WhatsApp and the app',d:'Book a Styling Hour, a video call or a birthday Height Wall slot.',kpi:'Visits',p:'Parent app › Store'},
+ {l:'bridge',k:'studio',n:'Video styling',w:'Video and creator corner',d:'An associate shows options live on WhatsApp video; order online or keep aside.',kpi:'Online conversion',p:'Parent app › Store'},
+ {l:'bridge',k:'shelf',n:'Festive planner',w:'“Kept aside for you” shelf',d:'One tap keeps the next size aside for every child before Diwali, Eid or school reopening.',kpi:'Size-up conversion',p:'Parent app › Home'},
+ {l:'comm',k:'lab',n:'Kids’ Design Lab',w:'Design Lab table',d:'Children draw prints in store or parents upload them; winners become a “Designed by Kids” capsule.',kpi:'Entries, capsule sell-through',p:'App › Community · HQ › Community'},
+ {l:'comm',k:'circles',n:'Grow Club Circles',w:'Meetup corner by the parents’ seat',d:'Neighbourhood WhatsApp communities and a Saturday meetup each month: stories, art and styling.',kpi:'Members, meetup visits',p:'App › Community'},
+ {l:'comm',k:'since',n:'“Since 1980” stories',w:'Then-and-now wall',d:'Parents who wore Gini & Jony as children share then-and-now. Never children’s faces or names.',kpi:'Stories approved',p:'App › Me'},
+ {l:'comm',k:'hmu',n:'Hand-Me-Ups',w:'Pre-loved rail',d:'Good pre-loved Gini & Jony pieces find a new family; credit goes back to the family that passed them on.',kpi:'Pieces rehomed',p:'App › Store · HQ › Community'},
+ {l:'comm',k:'whatsapp',n:'Gift a size',w:'Shared on WhatsApp',d:'Grandparents get a gift list already in the right size; nothing personal is shared.',kpi:'Gift orders',p:'App › Me › Gift a size'},
+ {l:'comm',k:'studio',n:'Grow Club creators',w:'Video and creator corner',d:'Real members preview new collections before any paid influencer; posts are labelled as collaborations.',kpi:'Creator posts',p:'App › Community'},
+ {l:'csr',k:'ngo',n:'Give via an NGO partner',w:'NGO pickup outside the store',d:'What can’t be resold goes to children in need through a partner such as Goonj (terms to be agreed).',kpi:'Pieces donated, children reached',p:'HQ › Community & CSR'},
+ {l:'csr',k:'csr',n:'Three moments a year',w:'Window banner',d:'Children’s Day launch on 14 Nov, a back-to-school kit drive (Apr–Jun) and Daan Utsav (2–8 Oct).',kpi:'Pieces rehomed, members joined',p:'HQ › Community & CSR'},
+ {l:'data',k:'counter',n:'Consent on her own phone',w:'Billing counter',d:'Staff ask one question; the parent chooses each purpose on her own phone. Staff can never tick consent.',kpi:'Valid consent: 100% of members',p:'Live demo'},
+ {l:'data',k:'cloud',n:'One household record',w:'Grow Club CRM',d:'Mobile stored as a one-way hash + last 4 digits; every message is checked against an append-only consent ledger.',kpi:'Single customer view',p:'HQ › Families · Consent'},
+ {l:'data',k:'market',n:'Hangtag bridge to marketplaces',w:'Myntra · FirstCry · Nykaa',d:'A hangtag scan turns a marketplace buyer the brand never saw into a known household.',kpi:'Registrations from marketplaces',p:'Parent app › Scan'},
+ {l:'data',k:'hq',n:'Lifecycle and needs-based segments',w:'Brand HQ',d:'Five lifecycle stages and six family needs; generosity is capped by value, never % off for VIPs.',kpi:'60-day second purchase',p:'HQ › Segments'},
+ {l:'data',k:'hq',n:'Five role-based views',w:'Brand HQ',d:'Parent, store staff, franchise owner, HQ and product team each see only what their job needs.',kpi:'No full numbers ever shown',p:'HQ › Franchise view'},
+ {l:'data',k:'hq',n:'Pilot with a 10% holdout',w:'Brand HQ',d:'Two stores and the website against two control stores; a holdout proves the lift.',kpi:'Seven pilot KPIs',p:'HQ › Pilot & roadmap'}
+];
+INI.forEach((x,i)=>x.i=i);
+let iniOn=false,iniSel=-1,iniLane=null,iniTour=false,iniTimer=null;
+const iniEl=document.createElement('div');iniEl.className='ini';iniEl.hidden=true;iniEl.innerHTML='<svg aria-hidden="true"></svg>';stage.appendChild(iniEl);const iniSvg=iniEl.querySelector('svg');
+const iniBadges=INI.map(x=>{const b=document.createElement('button');b.type='button';b.className='ini-b';b.dataset.ini=x.i;b.style.background=LANE[x.l].bg;b.style.color=LANE[x.l].fg;b.innerHTML=`<b>${x.i+1}</b><span>${esc(x.n)}</span>`;b.setAttribute('aria-label',`${x.i+1}: ${x.n}`);iniEl.appendChild(b);return b;});
+const iniFloor=new THREE.Group();scene.add(iniFloor);iniFloor.visible=false;
+[...new Set(INI.map(x=>x.k))].forEach(k=>{const f=fixtures[k];if(!f||f.point.y>4.5||Math.abs(f.point.x)>8||f.point.z>9)return;const lanes=[...new Set(INI.filter(x=>x.k===k).map(x=>x.l))];
+  lanes.forEach((l,j)=>{const r0=0.55+j*0.14;const d=new THREE.Mesh(new THREE.RingGeometry(r0,r0+0.12,48),new THREE.MeshBasicMaterial({color:new THREE.Color(LANE[l].bg),transparent:true,opacity:0.85,side:THREE.DoubleSide,depthWrite:false}));d.rotation.x=-Math.PI/2;d.position.set(f.point.x,0.075+j*0.002,f.point.z);iniFloor.add(d);});});
+const ctaEl=document.createElement('button');ctaEl.type='button';ctaEl.className='ini-cta';ctaEl.innerHTML=`<i aria-hidden="true">${LANES.map(l=>`<s style="background:${l[2]}"></s>`).join('')}</i><span>See all ${INI.length} initiatives</span>`;stage.appendChild(ctaEl);
+const INI_CAM={studio:[6.0,1.2,3.7,7,-2.3,1.05],ngo:[3.4,1.2,10.6,12,2.6,1.0]};
+function iniCam(k){if(INI_CAM[k])return INI_CAM[k];const st=STEPS.find(s=>(s.hl||[]).includes(k));if(st)return st.cam;const p=fixtures[k].point;return p.z>9?[p.x,1.2,p.z-0.4,11,0.35,1.05]:[p.x,Math.min(1.4,p.y*0.6),p.z,7,p.x>3?-0.35:0.45,1.0];}
+function iniList(){return INI.filter(x=>!iniLane||x.l===iniLane);}
+function iniPanel(){const s=INI[iniSel];const cnt=l=>INI.filter(x=>x.l===l).length;
+  $('#pbody').innerHTML=`<div class="kicker"><span class="k-scene">All initiatives</span><span>${INI.length} in one store</span></div><span class="bar" aria-hidden="true"></span>
+  <h1>Every Grow Club initiative, where it happens</h1><p class="cap">Each numbered pin is a CRM initiative from the pitch deck, placed where the family meets it. Tap a pin or a row to fly there.</p>
+  <div class="ini-acts"><button type="button" class="ini-btn on" data-iact="tour">${iniTour?'Pause tour':'▶ Tour all'}</button><button type="button" class="ini-btn" data-iact="all">Whole store</button><button type="button" class="ini-btn" data-iact="exit">Back to the story</button></div>
+  <div class="ini-lanes">${LANES.map(([id,n,bg,fg])=>`<button type="button" data-ilane="${id}" aria-pressed="${iniLane===id}"><i style="background:${bg}"></i>${esc(n)}<small>${cnt(id)}</small></button>`).join('')}</div>
+  ${s?`<div class="ini-card" style="--lc:${LANE[s.l].bg}"><div class="ini-ck"><b style="background:${LANE[s.l].bg};color:${LANE[s.l].fg}">${s.i+1}</b>${esc(LANE[s.l].n)} · ${esc(s.w)}</div><h2>${esc(s.n)}</h2><p>${esc(s.d)}</p><div class="ini-kv"><span>KPI</span><b>${esc(s.kpi)}</b></div><div class="ini-kv"><span>Try it</span><b>${esc(s.p)}</b></div></div>`:''}
+  ${LANES.filter(l=>!iniLane||l[0]===iniLane).map(([id,n,bg])=>`<div class="sec">${esc(n)}</div><div class="ini-rows">${INI.filter(x=>x.l===id).map(x=>`<button type="button" data-ini="${x.i}" aria-current="${x.i===iniSel}"><b style="background:${bg};color:${LANE[id].fg}">${x.i+1}</b><span>${esc(x.n)}<small>${esc(x.w)}</small></span></button>`).join('')}</div>`).join('')}`;}
+function iniSelect(i,keepTour){if(!keepTour)iniStopTour();iniSel=i;const s=INI[i];camGo(iniCam(s.k));setHL([s.k]);const f=fixtures[s.k];ring.visible=f.point.y<4.5&&Math.abs(f.point.x)<8&&f.point.z<9;ring.position.set(f.point.x,0.08,f.point.z);iniPanel();
+  const row=document.querySelector(`#pbody [data-ini="${i}"]`);const card=document.querySelector('#pbody .ini-card');if(card)card.scrollIntoView({block:'nearest'});else if(row)row.scrollIntoView({block:'nearest'});}
+function iniOverview(){iniSel=-1;setHL([]);ring.visible=false;camGo([0,1.6,3.2,25,0.55,0.86]);iniPanel();}
+function iniStopTour(){iniTour=false;clearTimeout(iniTimer);}
+function iniStep(){const L=iniList();if(!L.length)return;const k=L.findIndex(x=>x.i===iniSel);const nx=L[(k+1)%L.length];iniSelect(nx.i,true);iniTimer=setTimeout(()=>{if(iniTour)iniStep();},reduce?6000:4600);}
+function iniStart(){iniOn=true;playing=false;clearTimeout(timer);if('speechSynthesis' in window)speechSynthesis.cancel();setFlows([]);allFlowGroup.visible=false;shelfBags.forEach(b=>b.visible=false);
+  iniEl.hidden=false;iniFloor.visible=true;stage.classList.add('ini-on');document.querySelector('aside').classList.add('ini-mode');$('#tIni').setAttribute('aria-pressed','true');ctaEl.classList.add('on');ctaEl.querySelector('span').textContent='Back to the story';$('#sub').hidden=true;iniOverview();}
+function iniEnd(noGo){iniStopTour();iniOn=false;iniEl.hidden=true;iniFloor.visible=false;stage.classList.remove('ini-on');document.querySelector('aside').classList.remove('ini-mode');$('#tIni').setAttribute('aria-pressed','false');ctaEl.classList.remove('on');ctaEl.querySelector('span').textContent=`See all ${INI.length} initiatives`;if(!noGo)go(cur);}
+const _go=go;go=function(i){if(iniOn)iniEnd(true);_go(i);};
+$('#tIni').onclick=()=>iniOn?iniEnd():iniStart();ctaEl.onclick=()=>iniOn?iniEnd():iniStart();
+iniEl.addEventListener('click',e=>{const b=e.target.closest('[data-ini]');if(b)iniSelect(+b.dataset.ini);});
+$('#pbody').addEventListener('click',e=>{if(!iniOn)return;const r=e.target.closest('[data-ini]');if(r){iniSelect(+r.dataset.ini);return;}const l=e.target.closest('[data-ilane]');if(l){iniLane=iniLane===l.dataset.ilane?null:l.dataset.ilane;iniStopTour();if(iniSel>=0&&iniLane&&INI[iniSel].l!==iniLane)iniSel=-1;iniPanel();return;}
+  const a=e.target.closest('[data-iact]');if(!a)return;if(a.dataset.iact==='exit')iniEnd();else if(a.dataset.iact==='all'){iniStopTour();iniOverview();}else if(a.dataset.iact==='tour'){if(iniTour){iniStopTour();iniPanel();}else{iniTour=true;iniStep();}}});
+canvas.addEventListener('pointerdown',()=>{if(iniTour){iniStopTour();iniPanel();}});
+function iniLayout(){if(!iniOn)return;const S=stage.getBoundingClientRect(),W=S.width,H=S.height;const occ=[];let lines='';
+  ['.tools','.hint','.illu','.ini-cta'].forEach(sel=>{const e=document.querySelector(sel);if(e&&e.offsetParent)occ.push(rectOf(e));});
+  const byK={};INI.forEach(x=>{(byK[x.k]=byK[x.k]||[]).push(x);});
+  const order=Object.keys(byK).sort((a,b)=>(byK[b].some(x=>x.i===iniSel)?1:0)-(byK[a].some(x=>x.i===iniSel)?1:0));
+  order.forEach(k=>{const L=byK[k],a=project(fixtures[k].point);
+    if(!a.vis||a.x<-20||a.x>W+20||a.y<-20||a.y>H+20){L.forEach(x=>iniBadges[x.i].style.display='none');return;}
+    lines+=`<circle cx="${a.x}" cy="${a.y}" r="3.5" fill="#111"/>`;
+    L.forEach((x,j)=>{const b=iniBadges[x.i];b.style.display='flex';const on=x.i===iniSel;b.classList.toggle('on',on);b.classList.toggle('dim',!!iniLane&&x.l!==iniLane);
+      const w=b.offsetWidth,h=b.offsetHeight;let cx=a.x+(j-(L.length-1)/2)*32,cy=a.y-30;let r=null;
+      for(let t=0;t<6;t++){const rr={x:cx-w/2,y:cy-h/2-t*30,w,h};rr.x=Math.max(4,Math.min(W-w-4,rr.x));rr.y=Math.max(4,Math.min(H-h-4,rr.y));if(!occ.some(o=>hit(o,rr))||t===5){r=rr;break;}}
+      occ.push(r);b.style.left=r.x+'px';b.style.top=r.y+'px';lines+=`<line x1="${a.x}" y1="${a.y}" x2="${r.x+w/2}" y2="${r.y+h/2}" stroke="${LANE[x.l].bg==='#111111'?'#111':LANE[x.l].bg}" stroke-width="${on?2.4:1.4}" opacity="${iniLane&&x.l!==iniLane?0.2:0.9}"/>`;});});
+  iniSvg.innerHTML=lines;}
+
 /* ================= loop ================= */
 function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix();sizeComposer();}
 window.addEventListener('resize',resize);if(window.ResizeObserver)new ResizeObserver(resize).observe(stage);
@@ -691,8 +820,8 @@ function tick(now){const dt=Math.min(0.1,(now-last)/1000);last=now;const tt=now/
   stepActors(dt,st);
   packets.forEach(p=>{const u=((tt*0.45)+p.off)%1;p.mesh.position.copy(p.curve.getPoint(u));});
   if(ring.visible){const s=1+0.1*Math.sin(tt*3);ring.scale.set(s,s,s);ring.material.opacity=0.55+0.35*Math.sin(tt*3);}
-  renderFrame();perfSample(dt);layoutLabels();requestAnimationFrame(tick);}
-window.GC={applyStyle,get useAO(){return useAO},setAO(v){useAO=v;},renderer,go,STEPS,A,fixtures,camera,scene,walls,cam,get cur(){return cur;},layoutLabels};
+  renderFrame();perfSample(dt);layoutLabels();iniLayout();requestAnimationFrame(tick);}
+window.GC={INI,iniStart,iniEnd,iniSelect,applyStyle,get useAO(){return useAO},setAO(v){useAO=v;},renderer,go,STEPS,A,fixtures,camera,scene,walls,cam,get cur(){return cur;},layoutLabels};
 buildComposer();applyStyle('real');resize();go(0);requestAnimationFrame(tick);
 })();
 
