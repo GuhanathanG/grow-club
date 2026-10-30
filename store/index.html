@@ -776,7 +776,7 @@ function iniList(){return INI.filter(x=>!iniLane||x.l===iniLane);}
 function iniPanel(){const s=INI[iniSel];const cnt=l=>INI.filter(x=>x.l===l).length;
   $('#pbody').innerHTML=`<div class="kicker"><span class="k-scene">All initiatives</span><span>${INI.length} in one store</span></div><span class="bar" aria-hidden="true"></span>
   <h1>Every Grow Club initiative, where it happens</h1><p class="cap">Each numbered pin is a CRM initiative from the pitch deck, placed where the family meets it. Tap a pin or a row to fly there.</p>
-  <div class="ini-acts"><button type="button" class="ini-btn on" data-iact="tour">${iniTour?'Pause tour':'▶ Tour all'}</button><button type="button" class="ini-btn" data-iact="all">Whole store</button><button type="button" class="ini-btn" data-iact="exit">Back to the story</button></div>
+  <div class="ini-acts"><button type="button" class="ini-btn on" data-iact="tour">${iniTour?'Pause tour':'▶ Tour all'}</button><button type="button" class="ini-btn" data-iact="all">Whole store</button><button type="button" class="ini-btn" data-iact="exit">▶ Watch the store story</button></div>
   <div class="ini-lanes">${LANES.map(([id,n,bg,fg])=>`<button type="button" data-ilane="${id}" aria-pressed="${iniLane===id}"><i style="background:${bg}"></i>${esc(n)}<small>${cnt(id)}</small></button>`).join('')}</div>
   ${s?`<div class="ini-card" style="--lc:${LANE[s.l].bg}"><div class="ini-ck"><b style="background:${LANE[s.l].bg};color:${LANE[s.l].fg}">${s.i+1}</b>${esc(LANE[s.l].n)} · ${esc(s.w)}</div><h2>${esc(s.n)}</h2><p>${esc(s.d)}</p><div class="ini-kv"><span>KPI</span><b>${esc(s.kpi)}</b></div><div class="ini-kv"><span>Try it</span><b>${esc(s.p)}</b></div></div>`:''}
   ${LANES.filter(l=>!iniLane||l[0]===iniLane).map(([id,n,bg])=>`<div class="sec">${esc(n)}</div><div class="ini-rows">${INI.filter(x=>x.l===id).map(x=>`<button type="button" data-ini="${x.i}" aria-current="${x.i===iniSel}"><b style="background:${bg};color:${LANE[id].fg}">${x.i+1}</b><span>${esc(x.n)}<small>${esc(x.w)}</small></span></button>`).join('')}</div>`).join('')}`;}
@@ -786,8 +786,8 @@ function iniOverview(){iniSel=-1;setHL([]);ring.visible=false;camGo([0,1.6,3.2,2
 function iniStopTour(){iniTour=false;clearTimeout(iniTimer);}
 function iniStep(){const L=iniList();if(!L.length)return;const k=L.findIndex(x=>x.i===iniSel);const nx=L[(k+1)%L.length];iniSelect(nx.i,true);iniTimer=setTimeout(()=>{if(iniTour)iniStep();},reduce?6000:4600);}
 function iniStart(){iniOn=true;playing=false;clearTimeout(timer);if('speechSynthesis' in window)speechSynthesis.cancel();setFlows([]);allFlowGroup.visible=false;shelfBags.forEach(b=>b.visible=false);
-  iniEl.hidden=false;iniFloor.visible=true;stage.classList.add('ini-on');document.querySelector('aside').classList.add('ini-mode');$('#tIni').setAttribute('aria-pressed','true');ctaEl.classList.add('on');ctaEl.querySelector('span').textContent='Back to the story';$('#sub').hidden=true;iniOverview();}
-function iniEnd(noGo){iniStopTour();iniOn=false;iniEl.hidden=true;iniFloor.visible=false;stage.classList.remove('ini-on');document.querySelector('aside').classList.remove('ini-mode');$('#tIni').setAttribute('aria-pressed','false');ctaEl.classList.remove('on');ctaEl.querySelector('span').textContent=`See all ${INI.length} initiatives`;if(!noGo)go(cur);}
+  iniEl.hidden=false;iniFloor.visible=true;stage.classList.add('ini-on');document.querySelector('aside').classList.add('ini-mode');$('#tIni').setAttribute('aria-pressed','true');ctaEl.classList.add('on');ctaEl.querySelector('span').textContent='Watch the store story';$('#sub').hidden=true;iniOverview();}
+function iniEnd(noGo){iniStopTour();iniOn=false;iniEl.hidden=true;iniFloor.visible=false;stage.classList.remove('ini-on');document.querySelector('aside').classList.remove('ini-mode');$('#tIni').setAttribute('aria-pressed','false');ctaEl.classList.remove('on');ctaEl.querySelector('span').textContent=`See all ${INI.length} initiatives`;if(!noGo){playing=true;_go(0);}}
 const _go=go;go=function(i){if(iniOn)iniEnd(true);_go(i);};
 $('#tIni').onclick=()=>iniOn?iniEnd():iniStart();ctaEl.onclick=()=>iniOn?iniEnd():iniStart();
 iniEl.addEventListener('click',e=>{const b=e.target.closest('[data-ini]');if(b)iniSelect(+b.dataset.ini);});
@@ -822,7 +822,7 @@ function tick(now){const dt=Math.min(0.1,(now-last)/1000);last=now;const tt=now/
   if(ring.visible){const s=1+0.1*Math.sin(tt*3);ring.scale.set(s,s,s);ring.material.opacity=0.55+0.35*Math.sin(tt*3);}
   renderFrame();perfSample(dt);layoutLabels();iniLayout();requestAnimationFrame(tick);}
 window.GC={INI,iniStart,iniEnd,iniSelect,applyStyle,get useAO(){return useAO},setAO(v){useAO=v;},renderer,go,STEPS,A,fixtures,camera,scene,walls,cam,get cur(){return cur;},layoutLabels};
-buildComposer();applyStyle('real');resize();go(0);requestAnimationFrame(tick);
+buildComposer();applyStyle('real');resize();go(0);if(!/[?&]story\b/.test(location.search))iniStart();requestAnimationFrame(tick);
 })();
 
 </script>
