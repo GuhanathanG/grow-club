@@ -250,6 +250,19 @@ body.cine .lbl.fx.hl{background:#F7E64A}
 
 .cx-guest{display:flex;align-items:center;gap:6px;margin-bottom:12px}.cx-guest b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-family:var(--serif);font-weight:600;font-size:.95rem;color:#8C8778;box-shadow:inset 0 0 0 1px var(--hair)}
 .cx-guest b.done{color:#111;box-shadow:inset 0 0 0 1px #111}.cx-guest b.on{background:#111;color:#F7E64A;box-shadow:none}.cx-guest span{margin-left:6px;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:#6E6A63}
+
+.cx-gstrip{position:absolute;top:78px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:6px 14px 6px 8px;border-radius:999px;background:var(--ivory);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 12px 30px -18px rgba(0,0,0,.4)}
+.cx-gstrip .cx-gk{font-size:.58rem;letter-spacing:.22em;color:#6E6A63;padding:0 8px 0 6px}
+.cx-gstrip div{display:flex;align-items:center;gap:7px;padding:5px 10px 5px 5px;border-radius:999px;color:#8C8778}
+.cx-gstrip b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-family:var(--serif);font-weight:600;font-size:.95rem;box-shadow:inset 0 0 0 1px var(--hair)}
+.cx-gstrip span{display:flex;flex-direction:column;font-size:.74rem;line-height:1.1;color:inherit}.cx-gstrip small{font-size:.58rem;opacity:.75}
+.cx-gstrip div.done{color:#111}.cx-gstrip div.done b{box-shadow:inset 0 0 0 1px #111}
+.cx-gstrip div.on{background:#111;color:#F7F3EA}.cx-gstrip div.on b{background:#F7E64A;color:#111;box-shadow:none}
+.cx-gstrip em{font-style:normal;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#6E6A63;margin-left:6px}
+body.inimode .cx-gstrip{display:none}
+@media (max-width:1250px){.cx-gstrip span{display:none}}
+@media (max-width:900px){.cx-gstrip{top:62px}}
+body.embed .cx-brand{visibility:hidden}
 </style>
 </head>
 <body>
@@ -916,7 +929,7 @@ const CH=[
  {k:'One Size Up',t:'Outgrown, not wasted',b:'Five outgrown pieces become ₹375 credit. Good pieces go to Hand-Me-Ups; the rest to children in need through an NGO partner.',beats:[19,20,STEPS.length-1]},
  {k:'Every family',t:'Every family, and the proof',b:'A family without a smartphone gets a printed Grow Card. Two pilot stores against two control stores prove the lift.',beats:[21,22,23,24]}];
 const BEAT_MS=3400;let chap=0,beatI=0,cinePlay=false,beatTimer=null,beatAt=0,cineOn=false;
-document.body.classList.add('cine');
+document.body.classList.add('cine');if(window.parent!==window)document.body.classList.add('embed');
 const cx=document.createElement('div');cx.className='cx';cx.innerHTML=`
  <div class="cx-top"><div class="cx-brand"><img src="${LOGO_BLOCK_SRC}" alt="Gini &amp; Jony"><span><b>Grow Club</b><small>In store · concept prototype, not an official Gini &amp; Jony store</small></span></div>
   <div class="cx-acts"><button type="button" class="cx-btn" data-cx="map"></button><button type="button" class="cx-btn ghost" data-cx="live">Try it live <span aria-hidden="true">↗</span></button><button type="button" class="cx-ico" data-cx="full" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button></div></div>
@@ -954,7 +967,7 @@ window.addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('inp
 canvas.addEventListener('pointerdown',()=>{if(cinePlay){cinePlay=false;clearTimeout(beatTimer);cineRender();}});
 /* opening shot: the lightbox switches on, a light sweep crosses the logo, then the camera pulls back */
 let introT0=0;
-function cineBoot(){const story=/[?&]story\b/.test(location.search);$c('[data-cx="map"]').innerHTML='All 30 initiatives';cineRender();
+function cineBoot(){const story=/[?&]story\b/.test(location.search)||(()=>{try{return window.parent!==window&&!!window.parent.__gcStory;}catch(e){return false;}})();if(window.parent!==window&&!document.querySelector('.applink'))$c('[data-cx="live"]').innerHTML='Next: 2 · Live system →';$c('[data-cx="map"]').innerHTML='All 30 initiatives';cineRender();
   const done=()=>{introOn=false;if(story)cineStart(0,true);else iniStart();};
   if(FAST||reduce){introT0=-1e9;done();return;}
   introOn=true;introT0=performance.now();cam.t.set(0,3.3,5.3);cam.d=6.2;cam.th=0.12;cam.ph=1.34;camT=1;camTo=null;setTimeout(done,2900);}
@@ -1057,22 +1070,28 @@ const E1=gs({s:2,t:'The story of the dress',b:'Fabric, fit and what other parent
 const S1=gs({s:2,t:'Into the trial room',b:'Kiara tries the dress; Meera decides.',idea:'GUEST · Sell',cam:[4.9,1.1,-3.45,6,-0.75,1.0],act:{P:[4.95,-3.3],C:[5.3,-3.8],S:[4.15,-3.55]},hl:['fitting'],say:['P','It fits her perfectly. We’ll take it.'],tablet:['trial'],crm:{rows:[['Size check','5-6Y fits',0]],note:'If a size is missing, the tablet orders it to home on the spot: an endless aisle.'}});
 const T1=gs({s:2,t:'Carry bag and a thank-you',b:'The associate hands over the bag and thanks them.',idea:'GUEST · Thank',cam:STEPS[4].cam,act:{P:[4.0,3.55],C:[3.3,3.7],S:[4.4,1.85]},hl:['counter'],say:['S','Thank you for shopping with us, Meera! See you at the next size.'],phone:['joined'],tablet:['thanks'],crm:{rows:[['Visit','Bill on WhatsApp · thanked',1]],note:'The thank-you closes the visit; the size clock starts the next one.'}});
 const NGO=CH[5].beats[2];
+/* the previous seven chapters, with all five GUEST stages inside the visit */
 CH.length=0;CH.push(
- {k:'Greet',g:'G',t:'Greet at the entrance',b:'“Hello, hi, welcome.” The associate welcomes Meera and Kiara at the door. Nothing is captured for walking in.',beats:[0,G1]},
- {k:'Understand',g:'U',t:'Understand what they need',b:'Who is it for, how old, boy or girl, which occasion? The Height Wall turns sizing into a moment for Kiara. Nothing is stored yet.',beats:[U1,2,3]},
- {k:'Engage',g:'E',t:'Engage at the product table',b:'The associate tells the story of the dress: the fabric, how it fits, and what other parents say about sizing.',beats:[E1]},
- {k:'Sell',g:'S',t:'Sell in the trial room',b:'Kiara tries it on and it fits. If a size were missing, the tablet would order it to home on the spot.',beats:[S1]},
- {k:'Thank',g:'T',t:'Thank at the cash desk',b:'One question at billing, consent on Meera’s own phone, the e-bill on WhatsApp, the carry bag and a thank-you.',beats:[4,6,7,8,T1]},
- {k:'Size clock',g:'',t:'After the visit: the size clock',b:'A welcome the next morning. Months later, one reminder; she taps “Keep aside” and collects the next size.',beats:[9,16,17,18]},
- {k:'One Size Up',g:'',t:'Outgrown, not wasted',b:'Five outgrown pieces become ₹375 credit. Good pieces go to Hand-Me-Ups; the rest to children in need through an NGO partner.',beats:[19,20,NGO]});
-cx.querySelector('.cx-segs').innerHTML=CH.map((c,i)=>`<button type="button" data-ch="${i}"><i><s></s></i><span><em>${c.g||'+'}</em>${esc(c.k)}</span></button>`).join('');
+ {k:'Arrive',t:'A family walks in',b:'Greeted at the door, asked who they are shopping for, measured at the Height Wall, shown the dress’s story and into the trial room: the visit follows GUEST.',beats:[0,G1,U1,2,3,E1,S1]},
+ {k:'Join',t:'One question at the till',b:'At the cash desk: four facts, a WhatsApp link, consent on Meera’s own phone, the carry bag and a thank-you. The tablet turns green in seconds.',beats:[4,5,6,7,8,T1,9]},
+ {k:'One record',t:'One record, every source',b:'Store, website, WhatsApp and marketplace hangtags feed one household record. Each role sees only what its job needs.',beats:[10,11]},
+ {k:'Fit Promise',t:'Bought anywhere, swapped here',b:'A marketplace buy is registered by its hangtag for a 30-day swap. When the jeans are too small, it’s a swap, not a refund.',beats:[12,13,14,15]},
+ {k:'Size clock',t:'The size clock brings her back',b:'Months later, one WhatsApp reminder. She taps “Keep aside”, the store prepares the next size, and she collects it.',beats:[16,17,18]},
+ {k:'One Size Up',t:'Outgrown, not wasted',b:'Five outgrown pieces become ₹375 credit. Good pieces go to Hand-Me-Ups; the rest to children in need through an NGO partner.',beats:[19,20,NGO]},
+ {k:'Every family',t:'Every family, and the proof',b:'A family without a smartphone gets a printed Grow Card. Two pilot stores against two control stores prove the lift.',beats:[21,22,23,24]});
+const BEATG={0:'G',[G1]:'G',[U1]:'U',2:'U',3:'U',[E1]:'E',[S1]:'S',4:'T',5:'T',6:'T',7:'T',8:'T',[T1]:'T'};
+cx.querySelector('.cx-segs').innerHTML=CH.map((c,i)=>`<button type="button" data-ch="${i}"><i><s></s></i><span><em>${String(i+1).padStart(2,'0')}</em>${esc(c.k)}</span></button>`).join('');
 /* floor markers at each GUEST area */
 const GZ={};
 [['G','Greet',0,3.3],['U','Understand',-1,-3.75],['E','Engage',0,1.65],['S','Sell',4.75,-3.25],['T','Thank',4.4,3.78]].forEach(([l,w,x,z])=>{const t=tex(256,256,(g,W,H)=>{g.clearRect(0,0,W,H);g.beginPath();g.arc(W/2,H/2,W/2-6,0,Math.PI*2);g.fillStyle='rgba(17,17,17,.82)';g.fill();g.lineWidth=5;g.strokeStyle='rgba(247,230,74,.9)';g.stroke();
   g.fillStyle='#F7E64A';g.textAlign='center';g.textBaseline='middle';g.font='600 112px "Cormorant Garamond",Georgia,serif';g.fillText(l,W/2,H/2-14);g.fillStyle='#F7F3EA';g.font='500 26px Jost,system-ui,sans-serif';g.fillText(w.toUpperCase(),W/2,H/2+62);});
   const m=new THREE.Mesh(new THREE.PlaneGeometry(0.8,0.8),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0.5,toneMapped:false}));m.rotation.x=-Math.PI/2;m.position.set(x,0.072,z);m.renderOrder=2;scene.add(m);GZ[l]=m;});
-const _cineRenderG=cineRender;cineRender=function(){_cineRenderG();const g=CH[chap].g;Object.entries(GZ).forEach(([l,m])=>{m.material.opacity=l===g?1:0.42;m.scale.setScalar(l===g?1.25:1);});
-  const cap=cx.querySelector('.cx-cap');if(cap&&!cap.querySelector('.cx-guest'))cap.insertAdjacentHTML('afterbegin',`<div class="cx-guest" aria-label="GUEST stages">${['G','U','E','S','T'].map(l=>`<b class="${l===g?'on':CH.findIndex(c=>c.g===l)<chap?'done':''}">${l}</b>`).join('')}<span>${g?'In store · GUEST':'After the visit'}</span></div>`);};
+/* GUEST strip, top centre: lights up the stage of the current moment */
+const GNAMES={G:['Greet','Entrance'],U:['Understand','Age wall · Height Wall'],E:['Engage','Product table'],S:['Sell','Trial room'],T:['Thank','Cash desk']};
+const gStrip=document.createElement('div');gStrip.className='cx-gstrip';cx.appendChild(gStrip);
+const _cineRenderG=cineRender;cineRender=function(){_cineRenderG();const st=CH[chap].beats[beatI];const g=BEATG[st]||'';const order='GUEST';const gi=g?order.indexOf(g):(chap>=1&&beatI>=CH[1].beats.length-1||chap>1?5:-1);
+  Object.entries(GZ).forEach(([l,m])=>{m.material.opacity=l===g?1:0.42;m.scale.setScalar(l===g?1.25:1);});
+  gStrip.innerHTML=`<span class="cx-gk">GUEST</span>${[...order].map((l,i)=>`<div class="${l===g?'on':i<gi?'done':''}"><b>${l}</b><span>${GNAMES[l][0]}<small>${GNAMES[l][1]}</small></span></div>`).join('')}<em>${g?'In store':gi>=5?'After the visit':'Before the visit'}</em>`;};
 
 /* ================= loop ================= */
 function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix();sizeComposer();}
