@@ -196,6 +196,7 @@ body.cine aside{display:none}
 body.cine.inimode .main{grid-template-columns:minmax(0,1fr) 420px}
 body.cine.inimode aside{display:flex;background:#FBFAF7}
 body.cine .stage{background:#EDE7DD}
+body.cine .stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 58%,rgba(40,28,14,.26) 100%)}
 body.cine h1{font-family:var(--serif);font-weight:500;font-size:2.1rem;letter-spacing:-.01em;line-height:1.05}
 body.cine .ini-card h2{font-family:var(--serif);font-size:1.5rem;font-weight:500}
 .cx{position:absolute;inset:0;pointer-events:none;z-index:4;color:#111;font-family:"Jost",system-ui,sans-serif}
@@ -320,7 +321,7 @@ const FAST=!!window.__fast;
 /* ================= renderer ================= */
 const canvas=$('#c'),stage=$('#stage'),labelsEl=$('#labels'),leaders=$('#leaders');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+renderer.setPixelRatio(Math.min(1.5,window.devicePixelRatio||1));
 renderer.outputEncoding=THREE.sRGBEncoding;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();
@@ -743,7 +744,7 @@ function planPath(a,b,extra){let rects=RAW_OBST.map(infl).concat((extra||[]).map
   for(let it=0;it<n;it++){let u=-1;for(let i=0;i<n;i++)if(!done[i]&&(u<0||dist[i]<dist[u]))u=i;if(u<0||dist[u]===Infinity)break;done[u]=true;if(u===1)break;
     for(let v=0;v<n;v++){if(done[v])continue;const d=Math.hypot(nodes[u][0]-nodes[v][0],nodes[u][1]-nodes[v][1]);if(dist[u]+d<dist[v]&&clear(nodes[u],nodes[v])){dist[v]=dist[u]+d;prev[v]=u;}}}
   if(prev[1]<0)return [b];const path=[];let c=1;while(c>0){path.unshift(nodes[c]);c=prev[c];}return path;}
-const PRIO={S:3,P:2,N:2,C:1};const SPEED={S:1.3,P:1.25,N:1.0,C:1.2};
+const PRIO={S:3,P:2,N:2,C:1};const SPEED={S:1.8,P:1.75,N:1.4,C:1.7};
 const region=z=>z>18?'home':'world';
 function setActors(act){const tg={};Object.entries(act||{}).forEach(([k,p])=>{if(p)tg[k]=p;});
   const fresh=Object.keys(tg).filter(k=>!A[k].visible&&k!=='S'&&region(tg[k][1])!=='home').sort((x,y)=>tg[x][0]-tg[y][0]);const entry={};fresh.forEach((k,i)=>{entry[k]=(i-(fresh.length-1)/2)*0.95;});
@@ -900,7 +901,8 @@ const _applyStyleC=applyStyle;applyStyle=function(mode){_applyStyleC(mode);if(mo
   interior.forEach(l=>{l.color.set(0xFFD6A0);l.intensity=0.95;});sun.shadow.mapSize.set(2048,2048);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}scene.fog.color.set(0xE9DCCB);
   if(skyObj){const u=skyObj.material.uniforms;u.turbidity.value=7.5;u.rayleigh.value=2.4;u.mieCoefficient.value=0.006;u.sunPosition.value.copy(sun.position).normalize();}
   scene.traverse(o=>{const m=o.material;if(m&&m.isMeshStandardMaterial&&!m.userData.envCut){m.envMapIntensity*=0.55;m.userData.envCut=true;}});};
-const _buildComposerC=buildComposer;buildComposer=function(){_buildComposerC();if(!composer)return;try{const r=stage.getBoundingClientRect();
+const HQ=/[?&]hq\b/.test(location.search);
+const _buildComposerC=buildComposer;buildComposer=function(){if(!HQ){useAO=false;logoGlow.forEach(L=>L.base=1.0);return;}_buildComposerC();if(!composer)return;try{const r=stage.getBoundingClientRect();
   if(THREE.UnrealBloomPass){const bl=new THREE.UnrealBloomPass(new THREE.Vector2(Math.max(2,r.width|0),Math.max(2,r.height|0)),0.42,0.55,0.96);composer.insertPass(bl,1);}
   if(THREE.VignetteShader){const v=new THREE.ShaderPass(THREE.VignetteShader);v.uniforms.offset.value=0.92;v.uniforms.darkness.value=1.12;composer.insertPass(v,composer.passes.length-(fxaa?1:0));}}catch(e){}};
 /* one extra beat: what can't be resold leaves with the NGO partner */
@@ -913,7 +915,7 @@ const CH=[
  {k:'Size clock',t:'The size clock brings her back',b:'Months later, one WhatsApp reminder. She taps “Keep aside”, the store prepares the next size, and she collects it.',beats:[16,17,18]},
  {k:'One Size Up',t:'Outgrown, not wasted',b:'Five outgrown pieces become ₹375 credit. Good pieces go to Hand-Me-Ups; the rest to children in need through an NGO partner.',beats:[19,20,STEPS.length-1]},
  {k:'Every family',t:'Every family, and the proof',b:'A family without a smartphone gets a printed Grow Card. Two pilot stores against two control stores prove the lift.',beats:[21,22,23,24]}];
-const BEAT_MS=4300;let chap=0,beatI=0,cinePlay=false,beatTimer=null,beatAt=0,cineOn=false;
+const BEAT_MS=3400;let chap=0,beatI=0,cinePlay=false,beatTimer=null,beatAt=0,cineOn=false;
 document.body.classList.add('cine');
 const cx=document.createElement('div');cx.className='cx';cx.innerHTML=`
  <div class="cx-top"><div class="cx-brand"><img src="${LOGO_BLOCK_SRC}" alt="Gini &amp; Jony"><span><b>Grow Club</b><small>In store · concept prototype, not an official Gini &amp; Jony store</small></span></div>
@@ -1020,15 +1022,28 @@ function realBoot(){if(!ASSET)return;interior.forEach(l=>scene.remove(l));hemi.i
   /* people: rigged, animated figures replace the block figures (faceless by design) */
   if(THREE.SkeletonUtils)GL.load(XBOT,g=>{const clips=Object.fromEntries(g.animations.map(a=>[a.name,a]));PEOPLE.forEach(p=>{try{attachBot(p,g,clips);}catch(e){}});},undefined,()=>{});}
 function attachBot(p,g,clips){const u=p.userData,o=u.opt||{};const bot=THREE.SkeletonUtils.clone(g.scene);const s=u.h/1.8;bot.scale.setScalar(s);
-  const isMq=p.userData.static&&p.position.y>0.2;const clay=new THREE.Color(o.top||0x888888).lerp(new THREE.Color(0xE8E2D8),0.5);const body=isMq?0xF3F1EC:clay.getHex(),joint=body;
-  bot.traverse(m=>{if(!m.isMesh)return;m.castShadow=true;m.receiveShadow=true;m.frustumCulled=false;const j=/Joints/i.test(m.material.name);
-    m.material=new THREE.MeshStandardMaterial({skinning:!!m.isSkinnedMesh,color:j?joint:body,roughness:isMq?0.55:0.88,metalness:0,envMapIntensity:isMq?0.6:0.35});m.userData.lam=m.material;});
+  const isMq=p.userData.static&&p.position.y>0.2;
+  bot.traverse(m=>{if(!m.isMesh)return;m.castShadow=true;m.receiveShadow=true;m.frustumCulled=false;m.material=isMq?new THREE.MeshStandardMaterial({skinning:!!m.isSkinnedMesh,color:0xF3F1EC,roughness:0.55,metalness:0,envMapIntensity:0.6}):humanMat(o,!!m.isSkinnedMesh);m.userData.lam=m.material;});
   p.children.forEach(c=>c.visible=false);p.add(bot);if(u.h<1.3){const hd=bot.getObjectByName('mixamorigHead');if(hd)hd.scale.setScalar(1.28);}
   const mixer=new THREE.AnimationMixer(bot);const idle=mixer.clipAction(clips.idle),walk=clips.walk?mixer.clipAction(clips.walk):null;idle.play();if(walk){walk.play();walk.setEffectiveWeight(0);}
   const k=1/(0.01*s);const hand=bot.getObjectByName('mixamorigRightHand');let ph=null;if(hand){ph=new THREE.Mesh(new THREE.BoxGeometry(0.075*k,0.15*k,0.012*k),new THREE.MeshStandardMaterial({color:0x111111,roughness:0.3,metalness:0.4}));ph.position.set(0,0.09*k,0.03*k);ph.visible=false;hand.add(ph);}
   mixer.update(isMq?0.6:Math.random()*2);u.xb={bot,mixer,idle,walk,ph,w:0,mq:isMq};}
+/* paint the rigged figure like a person: skin, hair, top and sleeves, trousers / dress / saree, shoes (regions from the bind pose) */
+function humanMat(o,skin){const C3=c=>new THREE.Color(c);const legs=o.skirtLong?0:(o.skirt?1:2);
+  const m=new THREE.MeshStandardMaterial({skinning:skin,color:0xFFFFFF,roughness:0.72,metalness:0,envMapIntensity:0.35});
+  m.onBeforeCompile=sh=>{Object.assign(sh.uniforms,{uSkin:{value:C3(o.skin||0xC68E62)},uTop:{value:C3(o.top||0x777777)},uBot:{value:C3(o.skirtLong?o.top:(o.bottom||0x444444))},uHair:{value:C3(o.hair||0x1C1714)},uShoe:{value:C3(0x2A2522)},uSleeve:{value:o.sleeve?1:0},uLegs:{value:legs}});
+    sh.vertexShader='varying vec3 vObj;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvObj=position;');
+    sh.fragmentShader='varying vec3 vObj;uniform vec3 uSkin,uTop,uBot,uHair,uShoe;uniform float uSleeve,uLegs;\n'+sh.fragmentShader.replace('vec4 diffuseColor = vec4( diffuse, opacity );',`
+      float h=vObj.y/1.806;float ax=abs(vObj.x);vec3 col=uTop;float rough=0.8;
+      if(h<0.045){col=uShoe;}
+      else if(h<0.5){ if(uLegs<0.5){col=uBot;} else if(uLegs<1.5){col=h>0.31?uTop:uSkin;} else {col=uBot;} }
+      else if(ax>0.2&&h>0.72){ col=(ax<0.42&&uSleeve>0.5)?uTop:(ax<0.27?uTop:uSkin); }
+      else if(h<0.815){col=uTop;}
+      else { col=uSkin; if(h>0.935||(h>0.86&&vObj.z<-0.035)) col=uHair; }
+      vec4 diffuseColor=vec4(diffuse*col,opacity);`);};
+  m.customProgramCacheKey=()=>'human';return m;}
 function realTick(dt){PEOPLE.forEach(p=>{const x=p.userData.xb;if(!x)return;if(x.mq||!p.visible)return;const target=p.userData.moving?1:0;x.w+=(target-x.w)*Math.min(1,dt*6);
-  if(x.walk){x.walk.setEffectiveWeight(x.w);x.idle.setEffectiveWeight(1-x.w);x.walk.timeScale=1.05;}x.mixer.update(dt);if(x.ph)x.ph.visible=!!p.userData.phone.visible;});}
+  if(x.walk){x.walk.setEffectiveWeight(x.w);x.idle.setEffectiveWeight(1-x.w);x.walk.timeScale=1.35;}x.mixer.update(dt);if(x.ph)x.ph.visible=!!p.userData.phone.visible;});}
 /* ================= GUEST: Greet · Understand · Engage · Sell · Thank, tied to store areas ================= */
 Object.assign(TB,{
  needs:()=>({html:`<div class="s-k">Understand · on the floor</div><p class="s-h">Who it’s for</p><div class="s-row"><span>For</span><b>Girl · 5 years</b></div><div class="s-row"><span>Size band</span><b>5-6Y</b></div><div class="s-row"><span>Occasion</span><b>Diwali outfit</b></div><div class="s-ok">Not saved. It only guides the associate.</div>`}),
@@ -1066,7 +1081,7 @@ const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
 const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let last=performance.now();
 function tick(now){const dt=Math.min(0.1,(now-last)/1000);last=now;const tt=now/1000;
-  if(camT<1&&camTo){camT=Math.min(1,camT+dt/(reduce||FAST?0.01:1.4));const e=ease(camT);cam.t.lerpVectors(camFrom.t,camTo.t,e);cam.d=camFrom.d+(camTo.d-camFrom.d)*e;cam.th=camFrom.th+(camTo.th-camFrom.th)*e;cam.ph=camFrom.ph+(camTo.ph-camFrom.ph)*e;}
+  if(camT<1&&camTo){camT=Math.min(1,camT+dt/(reduce||FAST?0.01:1.0));const e=ease(camT);cam.t.lerpVectors(camFrom.t,camTo.t,e);cam.d=camFrom.d+(camTo.d-camFrom.d)*e;cam.th=camFrom.th+(camTo.th-camFrom.th)*e;cam.ph=camFrom.ph+(camTo.ph-camFrom.ph)*e;}
   camApply();wallsAuto();
   const st=STEPS[cur];
   stepActors(dt,st);
