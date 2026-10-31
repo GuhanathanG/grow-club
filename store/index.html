@@ -246,6 +246,9 @@ body.cine .lbl.fx.hl{background:#F7E64A}
 @media (max-width:900px){body.cine .main{grid-template-rows:100svh}body.cine.inimode .main{grid-template-columns:1fr;grid-template-rows:62svh auto}
  .cx-dock{display:none}.cx-cap{bottom:84px;left:12px;right:12px;width:auto;padding:16px 18px}.cx-cap h2{font-size:1.5rem;margin:8px 0 6px}.cx-cap p{font-size:.8rem}
  .cx-top{top:10px;left:10px;right:10px}.cx-brand small{display:none}.cx-btn.ghost{display:none}.cx-bar{bottom:12px}.cx-segs button{min-width:64px}.cx-segs span em{display:none}}
+
+.cx-guest{display:flex;align-items:center;gap:6px;margin-bottom:12px}.cx-guest b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-family:var(--serif);font-weight:600;font-size:.95rem;color:#8C8778;box-shadow:inset 0 0 0 1px var(--hair)}
+.cx-guest b.done{color:#111;box-shadow:inset 0 0 0 1px #111}.cx-guest b.on{background:#111;color:#F7E64A;box-shadow:none}.cx-guest span{margin-left:6px;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:#6E6A63}
 </style>
 </head>
 <body>
@@ -704,7 +707,7 @@ function buildComposer(){if(!HAS.ssao)return;try{composer=new THREE.EffectCompos
   const orig=ssao.renderOverride.bind(ssao);ssao.renderOverride=function(rd,om,rt,cc,ca){const hid=[];scene.traverse(o=>{if(o.visible&&((o.isMesh&&o.material&&o.material.transparent&&o.material.opacity<0.6)||o.isLine||o.isLineSegments||o===skyObj||o===sky)){o.visible=false;hid.push(o);}});orig(rd,om,rt,cc,ca);hid.forEach(o=>o.visible=true);};
   composer.addPass(ssao);composer.addPass(new THREE.ShaderPass(THREE.GammaCorrectionShader));
   if(HAS.fxaa){fxaa=new THREE.ShaderPass(THREE.FXAAShader);composer.addPass(fxaa);}sizeComposer();}catch(e){composer=null;useAO=false;}}
-function sizeComposer(){if(!composer)return;const r=stage.getBoundingClientRect();const pr=Math.min(1.5,window.devicePixelRatio||1);composer.setPixelRatio(pr);composer.setSize(r.width,r.height);if(fxaa)fxaa.material.uniforms.resolution.value.set(1/(r.width*pr),1/(r.height*pr));}
+function sizeComposer(){if(!composer)return;const r=stage.getBoundingClientRect();const pr=Math.min(1.25,window.devicePixelRatio||1);composer.setPixelRatio(pr);composer.setSize(r.width,r.height);if(fxaa)fxaa.material.uniforms.resolution.value.set(1/(r.width*pr),1/(r.height*pr));}
 let STYLE='real';
 function applyStyle(mode){STYLE=mode;const keep=hlKeys.slice();setHL([]);
   scene.traverse(o=>{if(!o.isMesh)return;if(!o.userData.lam)o.userData.lam=o.material;o.material=mode==='real'?toStd(o.userData.lam):o.userData.lam;});
@@ -894,7 +897,7 @@ function iniLayout(){if(!iniOn)return;const S=stage.getBoundingClientRect(),W=S.
 /* look: golden-hour light, glowing interior, bloom on lit signs, soft vignette */
 const _applyStyleC=applyStyle;applyStyle=function(mode){_applyStyleC(mode);if(mode!=='real')return;
   renderer.toneMappingExposure=0.8;sun.color.set(0xFFD9AE);sun.intensity=2.05;sun.position.set(-12,9.5,15);hemi.color.set(0xFFF2E0);hemi.groundColor.set(0xA8957C);hemi.intensity=0.2;fill.intensity=0.08;
-  interior.forEach(l=>{l.color.set(0xFFD6A0);l.intensity=0.95;});scene.fog.color.set(0xE9DCCB);
+  interior.forEach(l=>{l.color.set(0xFFD6A0);l.intensity=0.95;});sun.shadow.mapSize.set(2048,2048);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}scene.fog.color.set(0xE9DCCB);
   if(skyObj){const u=skyObj.material.uniforms;u.turbidity.value=7.5;u.rayleigh.value=2.4;u.mieCoefficient.value=0.006;u.sunPosition.value.copy(sun.position).normalize();}
   scene.traverse(o=>{const m=o.material;if(m&&m.isMeshStandardMaterial&&!m.userData.envCut){m.envMapIntensity*=0.55;m.userData.envCut=true;}});};
 const _buildComposerC=buildComposer;buildComposer=function(){_buildComposerC();if(!composer)return;try{const r=stage.getBoundingClientRect();
@@ -910,7 +913,7 @@ const CH=[
  {k:'Size clock',t:'The size clock brings her back',b:'Months later, one WhatsApp reminder. She taps “Keep aside”, the store prepares the next size, and she collects it.',beats:[16,17,18]},
  {k:'One Size Up',t:'Outgrown, not wasted',b:'Five outgrown pieces become ₹375 credit. Good pieces go to Hand-Me-Ups; the rest to children in need through an NGO partner.',beats:[19,20,STEPS.length-1]},
  {k:'Every family',t:'Every family, and the proof',b:'A family without a smartphone gets a printed Grow Card. Two pilot stores against two control stores prove the lift.',beats:[21,22,23,24]}];
-const BEAT_MS=5200;let chap=0,beatI=0,cinePlay=false,beatTimer=null,beatAt=0,cineOn=false;
+const BEAT_MS=4300;let chap=0,beatI=0,cinePlay=false,beatTimer=null,beatAt=0,cineOn=false;
 document.body.classList.add('cine');
 const cx=document.createElement('div');cx.className='cx';cx.innerHTML=`
  <div class="cx-top"><div class="cx-brand"><img src="${LOGO_BLOCK_SRC}" alt="Gini &amp; Jony"><span><b>Grow Club</b><small>In store · concept prototype, not an official Gini &amp; Jony store</small></span></div>
@@ -977,13 +980,13 @@ function rtex(name,rep,srgb){const t=RTL.load(ASSET+'tex/'+name+'.jpg');t.wrapS=
 function addTrack(x,z,tx,ty,tz){const s=new THREE.SpotLight(0xFFE0B5,0,7,0.62,0.75,2);s.position.set(x,2.96,z);s.target.position.set(tx,ty,tz);scene.add(s);scene.add(s.target);
   const can=cyl(0.05,0.06,0.16,0x1B1B1B,x,2.9,z,null,{edges:false});can.lookAt(tx,ty,tz);can.rotateX(Math.PI/2);const lens=new THREE.Mesh(new THREE.CircleGeometry(0.045,16),new THREE.MeshBasicMaterial({color:0xFFF3DA,toneMapped:false}));lens.position.set(0,-0.081,0);lens.rotation.x=Math.PI/2;can.add(lens);return s;}
 const TRACKS=[];
-function realLights(on){TRACKS.forEach(s=>s.intensity=on?1.35:0);interior.forEach(l=>{if(on)l.intensity=0.55;});}
+function realLights(on){TRACKS.forEach(s=>s.intensity=on?1.6:0);}
 if(ASSET){
-  [[-1,0.6,-1.0,1.2,-4.7],[3,0.4,3,1.2,-4.7],[-5.6,-0.4,-6.8,1.2,-1.2],[-4.6,-3.1,-5.4,0.7,-3.7],[0,1.4,0,0.75,0.6],[6.1,-0.8,6.9,1.3,-1.4],[4.4,1.6,4.4,1,2.6],[2.1,-2.2,2.1,0.5,-3.0],[-3.4,-1.2,-3.4,0.5,-2.0]].forEach(a=>TRACKS.push(addTrack(...a)));
+  [[-1,0.6,-1.0,1.2,-4.7],[3,0.4,3,1.2,-4.7],[0,1.4,0,0.75,0.6],[6.1,-0.8,6.9,1.3,-1.4],[4.4,1.6,4.4,1,2.6],[-3.6,-0.6,-4.4,0.8,-2.4]].forEach(a=>TRACKS.push(addTrack(...a)));
   const _ap=applyStyle;applyStyle=function(mode){_ap(mode);realLights(mode==='real');if(mode==='real'&&hdrEnv)scene.environment=hdrEnv;};
 }
 let hdrEnv=null;
-function realBoot(){if(!ASSET)return;realLights(STYLE==='real');
+function realBoot(){if(!ASSET)return;interior.forEach(l=>scene.remove(l));hemi.intensity=Math.max(hemi.intensity,0.26);realLights(STYLE==='real');
   /* materials: herringbone oak parquet, warm plaster, oak veneer, linen, brass rails, stone paving, asphalt */
   useStd(floor,s=>{s.map=rtex('herringbone_parquet_Diffuse',[6,4.3],true);s.normalMap=rtex('herringbone_parquet_nor_gl',[6,4.3]);s.roughnessMap=rtex('herringbone_parquet_Rough',[6,4.3]);s.bumpMap=null;s.color.set(0xF2EBE2);s.roughness=1;s.envMapIntensity=0.28;s.normalScale.set(0.55,0.55);});
   walls.forEach(w=>{if(w.userData.side==='G'||!w.material||!w.material.color)return;const lam=w.userData.lam||w.material;if(!lam.color||lam.color.getHex()!==C.wallW)return;const p=w.geometry.parameters;const big=Math.max(p.width,p.depth);
@@ -1017,15 +1020,44 @@ function realBoot(){if(!ASSET)return;realLights(STYLE==='real');
   /* people: rigged, animated figures replace the block figures (faceless by design) */
   if(THREE.SkeletonUtils)GL.load(XBOT,g=>{const clips=Object.fromEntries(g.animations.map(a=>[a.name,a]));PEOPLE.forEach(p=>{try{attachBot(p,g,clips);}catch(e){}});},undefined,()=>{});}
 function attachBot(p,g,clips){const u=p.userData,o=u.opt||{};const bot=THREE.SkeletonUtils.clone(g.scene);const s=u.h/1.8;bot.scale.setScalar(s);
-  const isMq=p.userData.static&&p.position.y>0.2;const body=isMq?0xF2EFEA:(o.top||0x888888),joint=isMq?0xD9D3CA:(o.skirtLong?o.top:(o.bottom||0x555555));
+  const isMq=p.userData.static&&p.position.y>0.2;const clay=new THREE.Color(o.top||0x888888).lerp(new THREE.Color(0xE8E2D8),0.5);const body=isMq?0xF3F1EC:clay.getHex(),joint=body;
   bot.traverse(m=>{if(!m.isMesh)return;m.castShadow=true;m.receiveShadow=true;m.frustumCulled=false;const j=/Joints/i.test(m.material.name);
-    m.material=new THREE.MeshStandardMaterial({skinning:!!m.isSkinnedMesh,color:j?joint:body,roughness:isMq?0.22:(j?0.5:0.62),metalness:isMq?0.05:0.04,envMapIntensity:isMq?1.1:0.6});m.userData.lam=m.material;});
-  p.children.forEach(c=>c.visible=false);p.add(bot);
+    m.material=new THREE.MeshStandardMaterial({skinning:!!m.isSkinnedMesh,color:j?joint:body,roughness:isMq?0.55:0.88,metalness:0,envMapIntensity:isMq?0.6:0.35});m.userData.lam=m.material;});
+  p.children.forEach(c=>c.visible=false);p.add(bot);if(u.h<1.3){const hd=bot.getObjectByName('mixamorigHead');if(hd)hd.scale.setScalar(1.28);}
   const mixer=new THREE.AnimationMixer(bot);const idle=mixer.clipAction(clips.idle),walk=clips.walk?mixer.clipAction(clips.walk):null;idle.play();if(walk){walk.play();walk.setEffectiveWeight(0);}
   const k=1/(0.01*s);const hand=bot.getObjectByName('mixamorigRightHand');let ph=null;if(hand){ph=new THREE.Mesh(new THREE.BoxGeometry(0.075*k,0.15*k,0.012*k),new THREE.MeshStandardMaterial({color:0x111111,roughness:0.3,metalness:0.4}));ph.position.set(0,0.09*k,0.03*k);ph.visible=false;hand.add(ph);}
   mixer.update(isMq?0.6:Math.random()*2);u.xb={bot,mixer,idle,walk,ph,w:0,mq:isMq};}
 function realTick(dt){PEOPLE.forEach(p=>{const x=p.userData.xb;if(!x)return;if(x.mq||!p.visible)return;const target=p.userData.moving?1:0;x.w+=(target-x.w)*Math.min(1,dt*6);
   if(x.walk){x.walk.setEffectiveWeight(x.w);x.idle.setEffectiveWeight(1-x.w);x.walk.timeScale=1.05;}x.mixer.update(dt);if(x.ph)x.ph.visible=!!p.userData.phone.visible;});}
+/* ================= GUEST: Greet · Understand · Engage · Sell · Thank, tied to store areas ================= */
+Object.assign(TB,{
+ needs:()=>({html:`<div class="s-k">Understand · on the floor</div><p class="s-h">Who it’s for</p><div class="s-row"><span>For</span><b>Girl · 5 years</b></div><div class="s-row"><span>Size band</span><b>5-6Y</b></div><div class="s-row"><span>Occasion</span><b>Diwali outfit</b></div><div class="s-ok">Not saved. It only guides the associate.</div>`}),
+ product:()=>({html:`<div class="s-k">Engage · product story</div><p class="s-h">Floral cotton dress</p><div class="s-row"><span>Fabric</span><b>Soft cotton, twirl skirt</b></div><div class="s-row"><span>Parents say</span><b>Runs a little big</b></div><div class="s-row"><span>In store</span><b>4-5Y · 5-6Y · 7-8Y</b></div>`}),
+ trial:()=>({html:`<div class="s-k">Sell · trial room</div><div class="s-row"><span>Trying</span><b>Dress 5-6Y</b></div><div class="s-row"><span>6-7Y not here?</span><b>Order to home</b></div><div class="s-good">It fits. Ready to bill.</div>`}),
+ thanks:()=>({html:`<div class="s-k">Thank · cash desk</div><p class="s-h">Thank you, Meera</p><div class="s-row"><span>Bill</span><b>₹2,148 · on WhatsApp</b></div><div class="s-row"><span>Grow Club</span><b>Joined with consent</b></div><div class="s-ok">Carry bag handed over</div>`})});
+const gs=(o)=>{STEPS.push(Object.assign({phone:['off'],flows:[],hl:[]},o));return STEPS.length-1;};
+const G1=gs({s:0,t:'“Hello, hi, welcome.”',b:'The associate greets Meera and Kiara at the entrance.',idea:'GUEST · Greet',cam:[0.3,1.1,3.2,8,0.35,1.02],act:{P:[0.3,3.75],C:[0.9,3.85],S:[0.45,2.85]},say:['S','Hello, hi, welcome to Gini & Jony!'],tablet:['today'],crm:{rows:[['Visitor','Not identified',0]],note:'A greeting is service, not data capture. Nothing is stored.'}});
+const U1=gs({s:1,t:'Who are we shopping for?',b:'The associate asks who it is for, the age, boy or girl, and the occasion.',idea:'GUEST · Understand',cam:[-1,1.1,-3.1,7.5,0.25,1.0],act:{P:[-1.2,-3.2],C:[-0.6,-3.25],S:[-1.95,-2.95]},hl:['agewall'],say:['S','Who are we shopping for today? How old, and is it for a special occasion?'],tablet:['needs'],crm:{rows:[['Needs','Girl · 5 yrs · Diwali',0]],note:'Noted to help, not stored: nothing is saved before consent.'}});
+const E1=gs({s:2,t:'The story of the dress',b:'Fabric, fit and what other parents say about sizing.',idea:'GUEST · Engage',cam:[1.5,0.9,0.9,6.5,0.4,1.0],act:{P:[1.6,1.45],C:[2.15,1.5],S:[0.85,1.35]},hl:['tables'],say:['S','It’s soft cotton with a twirl skirt, and parents say it runs a little big, so 5-6Y gives her room to grow.'],tablet:['product'],crm:{rows:[['Product','Floral cotton dress · 5-6Y',0]],note:'Fit reviews from other parents back up the story.'}});
+const S1=gs({s:2,t:'Into the trial room',b:'Kiara tries the dress; Meera decides.',idea:'GUEST · Sell',cam:[5.1,1.1,-3.0,6.5,-0.55,1.0],act:{P:[4.85,-2.95],C:[5.28,-3.45],S:[4.55,-2.3]},hl:['fitting'],say:['P','It fits her perfectly. We’ll take it.'],tablet:['trial'],crm:{rows:[['Size check','5-6Y fits',0]],note:'If a size is missing, the tablet orders it to home on the spot: an endless aisle.'}});
+const T1=gs({s:2,t:'Carry bag and a thank-you',b:'The associate hands over the bag and thanks them.',idea:'GUEST · Thank',cam:STEPS[4].cam,act:{P:[4.0,3.55],C:[3.3,3.7],S:[4.4,1.85]},hl:['counter'],say:['S','Thank you for shopping with us, Meera! See you at the next size.'],phone:['joined'],tablet:['thanks'],crm:{rows:[['Visit','Bill on WhatsApp · thanked',1]],note:'The thank-you closes the visit; the size clock starts the next one.'}});
+const NGO=CH[5].beats[2];
+CH.length=0;CH.push(
+ {k:'Greet',g:'G',t:'Greet at the entrance',b:'“Hello, hi, welcome.” The associate welcomes Meera and Kiara at the door. Nothing is captured for walking in.',beats:[0,G1]},
+ {k:'Understand',g:'U',t:'Understand what they need',b:'Who is it for, how old, boy or girl, which occasion? The Height Wall turns sizing into a moment for Kiara. Nothing is stored yet.',beats:[U1,2,3]},
+ {k:'Engage',g:'E',t:'Engage at the product table',b:'The associate tells the story of the dress: the fabric, how it fits, and what other parents say about sizing.',beats:[E1]},
+ {k:'Sell',g:'S',t:'Sell in the trial room',b:'Kiara tries it on and it fits. If a size were missing, the tablet would order it to home on the spot.',beats:[S1]},
+ {k:'Thank',g:'T',t:'Thank at the cash desk',b:'One question at billing, consent on Meera’s own phone, the e-bill on WhatsApp, the carry bag and a thank-you.',beats:[4,6,7,8,T1]},
+ {k:'Size clock',g:'',t:'After the visit: the size clock',b:'A welcome the next morning. Months later, one reminder; she taps “Keep aside” and collects the next size.',beats:[9,16,17,18]},
+ {k:'One Size Up',g:'',t:'Outgrown, not wasted',b:'Five outgrown pieces become ₹375 credit. Good pieces go to Hand-Me-Ups; the rest to children in need through an NGO partner.',beats:[19,20,NGO]});
+cx.querySelector('.cx-segs').innerHTML=CH.map((c,i)=>`<button type="button" data-ch="${i}"><i><s></s></i><span><em>${c.g||'+'}</em>${esc(c.k)}</span></button>`).join('');
+/* floor markers at each GUEST area */
+const GZ={};
+[['G','Greet',0,3.3],['U','Understand',-1,-3.75],['E','Engage',0,1.65],['S','Sell',4.75,-3.25],['T','Thank',4.4,3.78]].forEach(([l,w,x,z])=>{const t=tex(256,256,(g,W,H)=>{g.clearRect(0,0,W,H);g.beginPath();g.arc(W/2,H/2,W/2-6,0,Math.PI*2);g.fillStyle='rgba(17,17,17,.82)';g.fill();g.lineWidth=5;g.strokeStyle='rgba(247,230,74,.9)';g.stroke();
+  g.fillStyle='#F7E64A';g.textAlign='center';g.textBaseline='middle';g.font='600 112px "Cormorant Garamond",Georgia,serif';g.fillText(l,W/2,H/2-14);g.fillStyle='#F7F3EA';g.font='500 26px Jost,system-ui,sans-serif';g.fillText(w.toUpperCase(),W/2,H/2+62);});
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(0.8,0.8),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0.5,toneMapped:false}));m.rotation.x=-Math.PI/2;m.position.set(x,0.072,z);m.renderOrder=2;scene.add(m);GZ[l]=m;});
+const _cineRenderG=cineRender;cineRender=function(){_cineRenderG();const g=CH[chap].g;Object.entries(GZ).forEach(([l,m])=>{m.material.opacity=l===g?1:0.42;m.scale.setScalar(l===g?1.25:1);});
+  const cap=cx.querySelector('.cx-cap');if(cap&&!cap.querySelector('.cx-guest'))cap.insertAdjacentHTML('afterbegin',`<div class="cx-guest" aria-label="GUEST stages">${['G','U','E','S','T'].map(l=>`<b class="${l===g?'on':CH.findIndex(c=>c.g===l)<chap?'done':''}">${l}</b>`).join('')}<span>${g?'In store · GUEST':'After the visit'}</span></div>`);};
 
 /* ================= loop ================= */
 function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix();sizeComposer();}
