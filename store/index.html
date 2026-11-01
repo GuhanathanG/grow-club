@@ -263,6 +263,24 @@ body.inimode .cx-gstrip{display:none}
 @media (max-width:1250px){.cx-gstrip span{display:none}}
 @media (max-width:900px){.cx-gstrip{top:62px}}
 body.embed .cx-brand{visibility:hidden}
+/* ---- one flow: initiative chips, running count, speed, finale ---- */
+.cx-ini{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px}
+.cx-chip{display:inline-flex;align-items:center;gap:7px;height:24px;padding:0 10px 0 3px;border-radius:999px;font-size:.72rem;font-weight:500;letter-spacing:.01em;box-shadow:0 0 0 1px rgba(0,0,0,.06) inset}
+.cx-chip b{display:grid;place-items:center;min-width:18px;height:18px;border-radius:999px;background:rgba(255,255,255,.28);font-size:.66rem;font-weight:600}
+.cx-ini small{font-size:.72rem;color:var(--ink2,#555)}
+.cx-count{position:relative;margin-top:12px;height:20px;display:flex;align-items:center;font-size:.72rem;color:var(--ink2,#555);letter-spacing:.02em}
+.cx-count::before{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:rgba(17,17,17,.1)}
+.cx-count i{position:absolute;left:0;bottom:0;height:2px;border-radius:2px;background:#111;transition:width .5s ease}
+.cx-count b{font-weight:600;color:#111}
+.cx-all{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-top:14px}
+.cx-all div{display:flex;align-items:center;gap:8px;font-size:.76rem}.cx-all i{width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}.cx-all span{flex:1}.cx-all b{font-weight:600}
+.cx-cap .cx-map{margin-top:14px}
+.cx-spd{display:flex;gap:2px;margin-left:8px;padding:3px;border-radius:999px;background:rgba(255,255,255,.08)}
+.cx-spd button{min-width:34px;height:30px;padding:0 6px;border-radius:999px;font-size:.7rem;font-weight:500;color:rgba(247,243,234,.7)}
+.cx-spd button:hover{color:#F7F3EA}.cx-spd button[aria-pressed="true"]{background:#F7F3EA;color:#111}
+.cx-segs button{min-width:72px}
+body.cxfin .cx-dock{display:none}
+@media (max-width:900px){.cx-spd button{min-width:28px;padding:0 4px}.cx-all{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -928,7 +946,7 @@ const CH=[
  {k:'Size clock',t:'The size clock brings her back',b:'Months later, one WhatsApp reminder. She taps “Keep aside”, the store prepares the next size, and she collects it.',beats:[16,17,18]},
  {k:'One Size Up',t:'Outgrown, not wasted',b:'Five outgrown pieces become ₹375 credit. Good pieces go to Hand-Me-Ups; the rest to children in need through an NGO partner.',beats:[19,20,STEPS.length-1]},
  {k:'Every family',t:'Every family, and the proof',b:'A family without a smartphone gets a printed Grow Card. Two pilot stores against two control stores prove the lift.',beats:[21,22,23,24]}];
-const BEAT_MS=3400;let chap=0,beatI=0,cinePlay=false,beatTimer=null,beatAt=0,cineOn=false;
+const BEAT_MS=3400;let SPD=(()=>{let v=+((location.search.match(/[?&]speed=([\d.]+)/)||[])[1]);if(!v){try{v=+localStorage.getItem('gc_speed');}catch(e){}}return [0.5,1,1.5,2].includes(v)?v:1;})();let chap=0,beatI=0,cinePlay=false,beatTimer=null,beatAt=0,cineOn=false;
 document.body.classList.add('cine');if(window.parent!==window)document.body.classList.add('embed');
 const cx=document.createElement('div');cx.className='cx';cx.innerHTML=`
  <div class="cx-top"><div class="cx-brand"><img src="${LOGO_BLOCK_SRC}" alt="Gini &amp; Jony"><span><b>Grow Club</b><small>In store · concept prototype, not an official Gini &amp; Jony store</small></span></div>
@@ -950,7 +968,7 @@ function cineRender(){const c=CH[chap],st=STEPS[c.beats[beatI]];
   [$c('.cx-phw'),$c('.cx-tbw'),$c('.cx-rec'),$c('.cx-cap')].forEach(e=>{e.classList.remove('fresh');void e.offsetWidth;e.classList.add('fresh');});
   cx.querySelectorAll('[data-ch]').forEach((b,i)=>{b.classList.toggle('on',i===chap);b.classList.toggle('done',i<chap);b.setAttribute('aria-current',i===chap);});
   $c('.cx-pp').innerHTML=cinePlay?'<svg viewBox="0 0 24 24"><rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/></svg><span>Pause</span>':'<svg viewBox="0 0 24 24"><path d="M7.5 5.2v13.6L19 12z"/></svg><span>'+(chap===CH.length-1&&beatI===CH[chap].beats.length-1?'Replay':'Play')+'</span>';}
-function cineSched(){clearTimeout(beatTimer);if(!cinePlay)return;beatAt=performance.now();beatTimer=setTimeout(()=>{const c=CH[chap];if(beatI<c.beats.length-1)cineGo(chap,beatI+1);else if(chap<CH.length-1)cineGo(chap+1,0);else{cinePlay=false;cineRender();}},reduce?BEAT_MS+1500:BEAT_MS);}
+function cineSched(){clearTimeout(beatTimer);if(!cinePlay)return;beatAt=performance.now();beatTimer=setTimeout(()=>{const c=CH[chap];if(beatI<c.beats.length-1)cineGo(chap,beatI+1);else if(chap<CH.length-1)cineGo(chap+1,0);else{cinePlay=false;cineRender();}},reduce?BEAT_MS/SPD+1500:BEAT_MS/SPD);}
 function cineGo(c,b){chap=Math.max(0,Math.min(CH.length-1,c));beatI=Math.max(0,Math.min(CH[chap].beats.length-1,b||0));cineOn=true;playing=false;go(CH[chap].beats[beatI]);cineRender();cineSched();}
 function cineStart(c,play){cinePlay=!!play;cineGo(c||0,0);}
 function cineToggle(){if(cinePlay){cinePlay=false;clearTimeout(beatTimer);cineRender();return;}cinePlay=true;if(chap===CH.length-1&&beatI===CH[chap].beats.length-1)cineGo(0,0);else{cineRender();cineSched();}}
@@ -980,7 +998,7 @@ function cineLayout(){const now=performance.now(),it=(now-introT0)/1000;
   const link=(el,anchor)=>{if(!el||!el.offsetParent||!anchor.vis||anchor.x<8||anchor.y<8||anchor.x>S.width-8||anchor.y>S.height-8)return;const r=el.getBoundingClientRect();const x=r.left-S.left,y=r.top-S.top+r.height*0.42;if(anchor.x>x-20)return;const mx=(x+anchor.x)/2;d+=`<path d="M${x} ${y} C ${mx} ${y}, ${mx} ${anchor.y}, ${anchor.x} ${anchor.y}" fill="none" stroke="#111" stroke-opacity=".55" stroke-width="1"/>`+dot(anchor);};
   const P=A.P;if(P.visible&&!$c('.cx-ph').classList.contains('pocket'))link($c('.cx-phw'),project(P.position.clone().add(new THREE.Vector3(0,P.userData.h*0.72,0))));
   link($c('.cx-tbw'),project(fixtures.tablet.point));link($c('.cx-rec'),project(fixtures.cloud.point));svg.innerHTML=d;
-  const fill=cx.querySelector('[data-ch].on s');if(fill){const n=CH[chap].beats.length;const f=cinePlay?Math.min(1,(now-beatAt)/BEAT_MS):0;fill.style.width=((beatI+f)/n*100).toFixed(1)+'%';}
+  const fill=cx.querySelector('[data-ch].on s');if(fill){const n=CH[chap].beats.length;const f=cinePlay?Math.min(1,(now-beatAt)/(BEAT_MS/SPD)):0;fill.style.width=((beatI+f)/n*100).toFixed(1)+'%';}
   cx.querySelectorAll('[data-ch].done s').forEach(s=>s.style.width='100%');cx.querySelectorAll('[data-ch]:not(.on):not(.done) s').forEach(s=>s.style.width='0');}
 /* ================= realism pass: scanned materials, studio light, real furniture, animated people =================
    Assets are CC0 from Poly Haven (served from /store/assets/); the animated figure is the three.js example "Xbot".
@@ -1056,7 +1074,7 @@ function humanMat(o,skin){const C3=c=>new THREE.Color(c);const legs=o.skirtLong?
       vec4 diffuseColor=vec4(diffuse*col,opacity);`);};
   m.customProgramCacheKey=()=>'human';return m;}
 function realTick(dt){PEOPLE.forEach(p=>{const x=p.userData.xb;if(!x)return;if(x.mq||!p.visible)return;const target=p.userData.moving?1:0;x.w+=(target-x.w)*Math.min(1,dt*6);
-  if(x.walk){x.walk.setEffectiveWeight(x.w);x.idle.setEffectiveWeight(1-x.w);x.walk.timeScale=1.35;}x.mixer.update(dt);if(x.ph)x.ph.visible=!!p.userData.phone.visible;});}
+  if(x.walk){x.walk.setEffectiveWeight(x.w);x.idle.setEffectiveWeight(1-x.w);x.walk.timeScale=1.35*SPD;}x.mixer.update(dt);if(x.ph)x.ph.visible=!!p.userData.phone.visible;});}
 /* ================= GUEST: Greet · Understand · Engage · Sell · Thank, tied to store areas ================= */
 Object.assign(TB,{
  needs:()=>({html:`<div class="s-k">Understand · on the floor</div><p class="s-h">Who it’s for</p><div class="s-row"><span>For</span><b>Girl · 5 years</b></div><div class="s-row"><span>Size band</span><b>5-6Y</b></div><div class="s-row"><span>Occasion</span><b>Diwali outfit</b></div><div class="s-ok">Not saved. It only guides the associate.</div>`}),
@@ -1092,6 +1110,78 @@ const gStrip=document.createElement('div');gStrip.className='cx-gstrip';cx.appen
 const _cineRenderG=cineRender;cineRender=function(){_cineRenderG();const st=CH[chap].beats[beatI];const g=BEATG[st]||'';const order='GUEST';const gi=g?order.indexOf(g):(chap>=1&&beatI>=CH[1].beats.length-1||chap>1?5:-1);
   Object.entries(GZ).forEach(([l,m])=>{m.material.opacity=l===g?1:0.42;m.scale.setScalar(l===g?1.25:1);});
   gStrip.innerHTML=`<span class="cx-gk">GUEST</span>${[...order].map((l,i)=>`<div class="${l===g?'on':i<gi?'done':''}"><b>${l}</b><span>${GNAMES[l][0]}<small>${GNAMES[l][1]}</small></span></div>`).join('')}<em>${g?'In store':gi>=5?'After the visit':'Before the visit'}</em>`;};
+/* ================= one flow: every initiative (community and CSR included), speed control, all-at-once finale ================= */
+const wa=(body)=>`<div class="wa-top"><span class="wa-av">G&amp;J</span><b>Gini &amp; Jony</b></div><div class="wa-body">${body}</div>`;
+Object.assign(PH,{
+ site:()=>({html:top('Shop','giniandjony.com')+`<div class="app-b"><div class="s-k">For Kiara · next size</div><div class="s-row"><span>Size</span><b>6-7Y pre-selected</b></div><div class="s-row"><span>Fit reviews</span><b>“Runs a little big”</b></div><div class="s-row"><span>Sold-out size</span><b>Alert me when back</b></div><div class="s-ok">Saved bag: one size-help message, never a discount code</div></div>`}),
+ tryhome:()=>({html:top('Bag','Try at home')+`<div class="app-b"><div class="s-k">Delivered today</div><div class="s-row"><span>Dress</span><b>6-7Y and 7-8Y</b></div><div class="s-row"><span>Keep</span><b>6-7Y</b></div><div class="s-ok">The 7-8Y goes back at the door</div></div>`}),
+ book:()=>({html:wa(`<div class="bub-b">Book a Styling Hour</div><div class="bub me">Saturday 11:00, Diwali look for Kiara</div><div class="bub">Booked. Or join a 10-minute video call and we’ll show options live.</div>`)}),
+ lab:()=>({html:top('Community','Kids’ Design Lab')+`<div class="app-b"><div class="s-k">Kiara’s entry</div><div class="s-row"><span>Print</span><b>“Rainbow elephants”</b></div><div class="s-row"><span>Status</span><b>Shortlisted</b></div><div class="s-ok">Winners join the “Designed by Kids” capsule</div></div>`}),
+ circles:()=>({html:wa(`<div style="text-align:center;font-size:8px;color:#767676">GROW CLUB CIRCLE · HSR LAYOUT</div><div class="bub">Saturday meetup at the store, 11:00: story time, art and styling. 18 families going.</div><div class="bub me">We’ll come!</div>`)}),
+ gift:()=>({html:wa(`<div class="bub">Kiara’s gift list, in her right size: 6-7Y. Nothing personal is shared.</div><div class="bub-b">Open gift list</div><div class="bub me">Sent to Nani</div>`)}),
+ creator:()=>({html:top('Community','Grow Club creators')+`<div class="app-b"><div class="s-k">Preview · winter collection</div><div class="s-row"><span>Posted by</span><b>Meera · member</b></div><div class="s-row"><span>Label</span><b>Collaboration</b></div><div class="s-ok">Real members before any paid influencer</div></div>`}),
+ csr:()=>({html:top('Community & CSR','Three moments')+`<div class="app-b"><div class="s-row"><span>14 Nov</span><b>Children’s Day launch</b></div><div class="s-row"><span>Apr–Jun</span><b>Back-to-school kit drive</b></div><div class="s-row"><span>2–8 Oct</span><b>Daan Utsav</b></div><div class="s-ok">Bring outgrown pieces, any brand of care</div></div>`})});
+Object.assign(TB,{
+ styling:()=>({html:`<div class="s-k">Saturday Styling Hour</div><div class="s-row"><span>11:00</span><b>Meera · Diwali look 6-7Y</b></div><div class="s-row"><span>Birthday</span><b>Kiara · Height Wall slot</b></div><div class="s-ok">Printed growth card ready</div>`}),
+ video:()=>({html:`<div class="s-k">Video styling · WhatsApp</div><div class="s-row"><span>On call</span><b>3 looks shown live</b></div><div class="s-row"><span>Outcome</span><b>Order online · or keep aside</b></div><div class="s-good">The sale counts for this store</div>`}),
+ lab:()=>({html:`<div class="s-k">Kids’ Design Lab</div><div class="s-row"><span>Entries this month</span><b>42</b></div><div class="s-row"><span>Parental consent</span><b>On every entry</b></div><div class="s-ok">No children’s names or faces published</div>`}),
+ since:()=>({html:`<div class="s-k">“Since 1980” wall</div><div class="s-row"><span>Story</span><b>Then-and-now · approved</b></div><div class="s-row"><span>Shown</span><b>Parent only, no child’s face</b></div>`}),
+ hmu:()=>({html:`<div class="s-k">Hand-Me-Ups rail</div><div class="s-row"><span>On the rail</span><b>3 pieces from Meera</b></div><div class="s-row"><span>When rehomed</span><b>Credit back to her family</b></div><div class="s-good">Pre-loved, checked and steamed</div>`}),
+ csr:()=>({html:`<div class="s-k">CSR · this season</div><div class="s-row"><span>Collected</span><b>210 pieces</b></div><div class="s-row"><span>Rehomed · donated</span><b>86 · 124</b></div><div class="s-ok">Reported like sales, every month</div>`})});
+const fx=(o)=>{STEPS.push(Object.assign({phone:['off'],flows:[],hl:[],tablet:['today']},o));return STEPS.length-1;};
+const HOME={P:[-5.6,22],C:[-6.5,22.3]};
+/* online and bridges */
+const W1=fx({s:6,t:'The website knows her next size',b:'giniandjony.com pre-selects 6-7Y for Kiara, shows parents’ fit reviews, alerts when a sold-out size returns and rescues a saved bag with size help, not a discount.',idea:'Online · size-aware site',cam:iniCam('web'),act:HOME,hl:['web'],phone:['site'],crm:{rows:[['Web','Next size 6-7Y shown',1],['Basket','Size help sent',0]],note:'The same household record drives the website as the store.'}});
+const W2=fx({s:6,t:'Two sizes, tried at home',b:'Not sure between two sizes? Both are delivered; Meera keeps the one that fits and hands the other back at the door.',idea:'Online · try at home',cam:iniCam('home'),act:HOME,hl:['home'],phone:['tryhome'],crm:{rows:[['Kept','Dress 6-7Y',1],['Returned at door','7-8Y',0]],note:'Size returns fall because the right size is chosen at home.'}});
+const W3=fx({s:6,t:'Book the store from WhatsApp',b:'A Styling Hour, a birthday Height Wall slot or a video call: booked in one chat. On video, an associate shows looks live and the sale still counts for the store.',idea:'Bridges · book services · video styling',cam:INI_CAM.studio,act:Object.assign({S:[5.5,3.15]},HOME),hl:['studio','whatsapp'],phone:['book'],tablet:['video'],crm:{rows:[['Booked','Styling Hour · Sat 11:00',1]],note:'Online and offline are one journey, not two channels.'}});
+const W4=fx({s:6,t:'Saturday Styling Hour',b:'An associate puts together Kiara’s Diwali look in her size. It’s her birthday month, so she gets a free Height Wall measure and a printed growth card.',idea:'In store · Styling Hour · birthday Height Wall',cam:iniCam('styling'),act:{P:[0.85,-2.0],C:[1.35,-2.4],S:[3.05,-2.1]},hl:['styling','height'],say:['S','Here’s a Diwali look in 6-7Y, and happy birthday, Kiara: shall we measure you?'],tablet:['styling'],crm:{rows:[['Visit','Styling Hour attended',1]],note:'Service brings families in; no discount is needed.'}});
+/* community and CSR */
+const K1=fx({s:7,t:'Kids’ Design Lab',b:'Kiara draws a print at the Design Lab table. The best entries become a “Designed by Kids” capsule, with a parent’s consent on every entry.',idea:'Community · Kids’ Design Lab',cam:iniCam('lab'),act:{P:[-2.35,-0.75],C:[-3.0,-1.0],S:[-3.95,-0.85]},hl:['lab'],say:['C','Look, rainbow elephants!'],phone:['lab'],tablet:['lab'],crm:{rows:[['Community','Design Lab entry',1]],note:'Children’s names and faces are never published.'}});
+const K2=fx({s:7,t:'Grow Club Circles',b:'Meera’s neighbourhood WhatsApp circle meets in store every month: story time, art and styling with other parents.',idea:'Community · Grow Club Circles',cam:iniCam('circles'),act:{P:[4.45,-0.35],C:[4.95,-0.2],S:[5.85,-0.45]},hl:['circles'],say:['S','Welcome to the Saturday circle! Story time starts in five minutes.'],phone:['circles'],crm:{rows:[['Circle','HSR Layout · meetup',1]],note:'A reason to visit that isn’t a sale.'}});
+const K3=fx({s:7,t:'“Since 1980” and Gift a size',b:'Kiara’s grandmother wore Gini & Jony as a child; her then-and-now story goes on the wall. She orders Kiara’s gift from a list already in the right size.',idea:'Community · “Since 1980” · Gift a size',cam:iniCam('since'),act:{N:[-5.55,1.95],P:[-5.05,1.55],S:[-4.35,1.25]},hl:['since'],say:['N','I wore Gini & Jony when I was her age!'],phone:['gift'],tablet:['since'],crm:{rows:[['Gift','Ordered by Nani · 6-7Y',1]],note:'Nothing personal is shared on the gift list.'}});
+const K4=fx({s:7,t:'Hand-Me-Ups, a new family',b:'Meera’s good pre-loved pieces hang on the Hand-Me-Ups rail. When another family takes one home, credit goes back to Meera.',idea:'Community · Hand-Me-Ups',cam:iniCam('hmu'),act:{P:[-3.75,1.95],C:[-3.2,2.05],S:[-2.45,1.75]},hl:['hmu'],phone:['credit'],tablet:['hmu'],crm:{rows:[['Rehomed','1 piece · credit back',1]],note:'Circular, and it brings both families back.'}});
+const K5=fx({s:7,t:'Members as creators',b:'Real Grow Club members preview the new collection in the creator corner before any paid influencer, and every post is labelled as a collaboration.',idea:'Community · Grow Club creators',cam:INI_CAM.studio,act:{P:[5.3,3.2],C:[5.75,3.05],S:[4.75,2.95]},hl:['studio'],say:['P','Kiara picked the winter collection: here’s what fits a five-year-old.'],phone:['creator'],crm:{rows:[['Creator','Post · labelled collaboration',1]],note:'Trust comes from real parents, clearly labelled.'}});
+const K6=fx({s:7,t:'Three CSR moments a year',b:'The window announces Children’s Day on 14 Nov, then a back-to-school kit drive and Daan Utsav. Every piece given is counted like a sale.',idea:'CSR · three moments a year',cam:iniCam('csr'),act:{P:[-3.35,5.45],C:[-2.8,5.55],S:[4.4,1.85]},hl:['csr','window'],phone:['csr'],tablet:['csr'],crm:{rows:[['CSR','Children’s Day drive',1]],note:'NGO partner terms to be agreed with the brand.'}});
+/* finale: all initiatives, at once */
+const FIN=fx({s:9,t:'Every initiative, one record',b:'All 30 Grow Club initiatives, pinned where the family meets them.',idea:'All initiatives',cam:[0,1.6,3.2,25,0.55,0.86],act:{},hl:[],crm:{rows:[['Initiatives','30 · one household record',0]],note:'Every one of them reads and writes the same consented record.'}});
+/* rebuild the story: chapters in order, community and the finale included */
+{const old=Object.fromEntries(CH.map(c=>[c.k,c]));const sc=old['Size clock'];sc.beats=sc.beats.slice();
+CH.length=0;CH.push(old['Arrive'],old['Join'],old['One record'],old['Fit Promise'],sc,
+ {k:'Anywhere',t:'The same size, everywhere she shops',b:'Website, home delivery, WhatsApp and the store’s services all read the same record, so Kiara’s size follows her everywhere.',beats:[W1,W2,W3,W4]},
+ old['One Size Up'],
+ {k:'Community',t:'A club, not a coupon',b:'Design Lab, Circles, “Since 1980”, Hand-Me-Ups, creators and CSR moments give families reasons to come back that aren’t discounts.',beats:[K1,K2,K3,K4,K5,K6]},
+ old['Every family'],
+ {k:'All at once',t:'The whole Grow Club, at once',b:'Every initiative from the deck, in one store and one flow: four services, online, in store, bridges, community, CSR and data.',beats:[FIN]});}
+cx.querySelector('.cx-segs').innerHTML=CH.map((c,i)=>`<button type="button" data-ch="${i}"><i><s></s></i><span><em>${String(i+1).padStart(2,'0')}</em>${esc(c.k)}</span></button>`).join('');
+/* which initiatives each moment shows (INI index) */
+const TAGS={2:[3],3:[3],[E1]:[6],[S1]:[11],4:[8],5:[8],6:[8],7:[24],8:[24,25],[T1]:[8],10:[25,26],11:[27,28],12:[26,1],13:[1,26],14:[1],15:[1],16:[0,15],17:[12],18:[12],
+ [W1]:[4,5,6],[W2]:[7],[W3]:[13,14],[W4]:[9,10],19:[2],20:[2,19],[NGO]:[22,19],[K1]:[16],[K2]:[17],[K3]:[18,20],[K4]:[19],[K5]:[21],[K6]:[23],23:[29],24:[29],[FIN]:INI.map(x=>x.i)};
+const ORDER=CH.flatMap(c=>c.beats);
+function seenUpTo(st){const s=new Set();for(const b of ORDER){(TAGS[b]||[]).forEach(i=>s.add(i));if(b===st)break;}return s;}
+/* speed: beats, walking, camera and gait all scale */
+const SPEED0=Object.assign({},SPEED);
+function setSpd(v){SPD=v;Object.keys(SPEED0).forEach(k=>SPEED[k]=SPEED0[k]*v);try{localStorage.setItem('gc_speed',String(v));}catch(e){}
+  cx.querySelectorAll('[data-spd]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.spd===v));}
+cx.querySelector('.cx-bar').insertAdjacentHTML('beforeend',`<div class="cx-spd" role="group" aria-label="Playback speed">${[0.5,1,1.5,2].map(v=>`<button type="button" data-spd="${v}" aria-pressed="${v===SPD}">${v}×</button>`).join('')}</div>`);
+setSpd(SPD);
+cx.addEventListener('click',e=>{const b=e.target.closest('[data-spd]');if(!b)return;e.stopPropagation();setSpd(+b.dataset.spd);if(cinePlay)cineSched();});
+window.addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,select,textarea'))return;const L=[0.5,1,1.5,2];const k=L.indexOf(SPD);
+  if(e.key==='+'||e.key==='='){setSpd(L[Math.min(3,k+1)]);if(cinePlay)cineSched();}else if(e.key==='-'||e.key==='_'){setSpd(L[Math.max(0,k-1)]);if(cinePlay)cineSched();}});
+/* finale: pins for all initiatives, lit one after another */
+let finOn=false,finT=null;
+const _iniLayoutF=iniLayout;iniLayout=function(){if(finOn&&!iniOn){iniOn=true;try{_iniLayoutF();}finally{iniOn=false;}}else _iniLayoutF();};
+function finSet(on){if(on===finOn)return;finOn=on;clearInterval(finT);document.body.classList.toggle('cxfin',on);
+  if(on){iniLane=null;iniSel=-1;iniEl.hidden=false;iniFloor.visible=true;stage.classList.add('ini-on');let n=0;finT=setInterval(()=>{iniSel=n%INI.length;n++;finChip();},Math.round(900/SPD));}
+  else if(!iniOn){iniSel=-1;iniEl.hidden=true;iniFloor.visible=false;stage.classList.remove('ini-on');}}
+const _iniStartF=iniStart;iniStart=function(){finSet(false);_iniStartF();};
+function finChip(){const e=$c('.cx-finchip');if(!e||iniSel<0)return;const x=INI[iniSel];e.innerHTML=`<span class="cx-chip" style="background:${LANE[x.l].bg};color:${LANE[x.l].fg}"><b>${x.i+1}</b>${esc(x.n)}</span><small>${esc(x.w)}</small>`;}
+/* caption: the initiatives in this moment, and the running count */
+const _cineRenderF=cineRender;cineRender=function(){const st=CH[chap].beats[beatI];finSet(st===FIN&&!iniOn);_cineRenderF();
+  const cap=$c('.cx-cap');const seen=seenUpTo(st);const tags=TAGS[st]||[];
+  let h='';if(st===FIN){h=`<div class="cx-all">${LANES.map(([id,n,bg,fg])=>`<div><i style="background:${bg}"></i><span>${esc(n)}</span><b>${INI.filter(x=>x.l===id).length}</b></div>`).join('')}</div><div class="cx-ini cx-finchip"></div><button type="button" class="cx-btn cx-map" data-cx="map">Explore the map</button>`;}
+  else if(tags.length)h=`<div class="cx-ini">${tags.map(i=>`<span class="cx-chip" style="background:${LANE[INI[i].l].bg};color:${LANE[INI[i].l].fg}"><b>${i+1}</b>${esc(INI[i].n)}</span>`).join('')}</div>`;
+  cap.insertAdjacentHTML('beforeend',`${h}<div class="cx-count"><i style="width:${(seen.size/INI.length*100).toFixed(1)}%"></i><span><b>${seen.size}</b> of ${INI.length} initiatives shown</span></div>`);finChip();};
+cineRender();
 
 /* ================= loop ================= */
 function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix();sizeComposer();}
@@ -1100,14 +1190,14 @@ const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
 const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let last=performance.now();
 function tick(now){const dt=Math.min(0.1,(now-last)/1000);last=now;const tt=now/1000;
-  if(camT<1&&camTo){camT=Math.min(1,camT+dt/(reduce||FAST?0.01:1.0));const e=ease(camT);cam.t.lerpVectors(camFrom.t,camTo.t,e);cam.d=camFrom.d+(camTo.d-camFrom.d)*e;cam.th=camFrom.th+(camTo.th-camFrom.th)*e;cam.ph=camFrom.ph+(camTo.ph-camFrom.ph)*e;}
+  if(camT<1&&camTo){camT=Math.min(1,camT+dt/(reduce||FAST?0.01:1.0/SPD));const e=ease(camT);cam.t.lerpVectors(camFrom.t,camTo.t,e);cam.d=camFrom.d+(camTo.d-camFrom.d)*e;cam.th=camFrom.th+(camTo.th-camFrom.th)*e;cam.ph=camFrom.ph+(camTo.ph-camFrom.ph)*e;}
   camApply();wallsAuto();
   const st=STEPS[cur];
   stepActors(dt,st);
   packets.forEach(p=>{const u=((tt*0.45)+p.off)%1;p.mesh.position.copy(p.curve.getPoint(u));});
   if(ring.visible){const s=1+0.1*Math.sin(tt*3);ring.scale.set(s,s,s);ring.material.opacity=0.55+0.35*Math.sin(tt*3);}
   renderFrame();perfSample(dt);layoutLabels();iniLayout();cineLayout();realTick(dt);requestAnimationFrame(tick);}
-window.GC={INI,iniStart,iniEnd,iniSelect,CH,cineGo,cineStart,cineBoot,applyStyle,get useAO(){return useAO},setAO(v){useAO=v;},renderer,go,STEPS,A,fixtures,camera,scene,walls,cam,get cur(){return cur;},layoutLabels};
+window.GC={fixtures,STEPS,INI,iniStart,iniEnd,iniSelect,CH,cineGo,cineStart,cineBoot,applyStyle,get useAO(){return useAO},setAO(v){useAO=v;},renderer,go,STEPS,A,fixtures,camera,scene,walls,cam,get cur(){return cur;},layoutLabels};
 buildComposer();applyStyle('real');resize();go(0);realBoot();cineBoot();requestAnimationFrame(tick);
 })();
 
